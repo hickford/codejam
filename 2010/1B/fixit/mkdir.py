@@ -1,4 +1,5 @@
 #!python
+# http://code.google.com/codejam/contest/dashboard?c=635101#s=p0
 import copy
 from collections import deque
 from optparse import OptionParser

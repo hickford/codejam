@@ -1,4 +1,5 @@
 #!python
+# http://code.google.com/codejam/contest/dashboard?c=635101#s=p1
 import sys
 from optparse import OptionParser
 from collections import deque
@@ -56,4 +57,3 @@ for i in range(1,T+1):
 		answer = swaps
 	print "Case #%d: %s" % (i,answer)
 	#print
-	pass

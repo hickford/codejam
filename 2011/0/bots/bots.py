@@ -1,4 +1,5 @@
 #!python
+# http://code.google.com/codejam/contest/dashboard?c=975485#
 import sys
 from optparse import OptionParser
 from collections import deque
@@ -23,7 +24,7 @@ for i in range(1,T+1):
     line = deque(f.readline().split())
     N = int(line.popleft())
     
-    clock=0
+    clock = 0
     
     while line:
         bot, target = line.popleft(), int(line.popleft())
