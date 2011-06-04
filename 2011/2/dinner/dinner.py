@@ -19,9 +19,7 @@ else:
     parser.error("Need input from file or stdin")
 
 T = int(f.readline())
-           
-from mpmath import primepi      # count primes at most n
-       
+                 
 def nth_root(N,k):
     """Return greatest integer x such that x**k <= N"""
     x = int(N**(1/k))      
@@ -31,6 +29,24 @@ def nth_root(N,k):
         x -= 1
     assert x**k <= N < (x+1)**k    
     return x
+
+upper_bound = 10**12
+# we only need to compute primepi up to sqrt of this
+
+import cPickle as pickle
+g = open("primes.dump") # primes up to 10**6
+primes = pickle.load(g)
+g.close()
+
+import bisect
+
+def primepi(x):
+    """Return the number of primes less than or equal to N"""
+    return bisect.bisect(primes,x)
+
+assert primepi(1) == 0
+assert primepi(2) == 1
+assert primepi(100) == 25
 
 for i in range(1,T+1):
     N = int(f.readline())
@@ -50,5 +66,4 @@ for i in range(1,T+1):
             x = nth_root(N,k)
 
     print "Case #%d: %s" % (i,answer)
-        
-        
+
