@@ -30,13 +30,40 @@ def nth_root(N,k):
     assert x**k <= N < (x+1)**k    
     return x
 
-upper_bound = 10**12
+upper_bound = math.sqrt(10**12)
 # we only need to compute primepi up to sqrt of this
 
 import cPickle as pickle
-g = open("primes.dump") # primes up to 10**6
-primes = pickle.load(g)
-g.close()
+try:
+    g = open("primes.dump") # primes up to 10**6
+    primes = pickle.load(g)
+    g.close()
+except:
+    def sieve(n = None, primelist = [2]):
+	    """Iterator. Yield primes [less than or equal to n]"""
+	    for p in primelist:
+		    if n and p > n:
+			    raise StopIteration
+		    yield p
+
+	    x = primelist[-1]+1
+		
+	    while not n or x <= n:
+		    limit = int(math.sqrt(x))
+		    for p in primelist:
+			    if p > limit:
+				    # x is prime
+				    primelist.append(x)
+				    yield x
+				    break
+			    if x % p == 0:
+				    # x is composite
+				    break
+		    x += 1
+    primes = list(sieve(upper_bound))
+    g = open("primes.dump",'wb')
+    pickle.dump(primes,g,-1)
+    g.close()
 
 import bisect
 
