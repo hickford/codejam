@@ -20,23 +20,17 @@ else:
 
 T = int(f.readline())
            
-import sieve
-import math
-import gcd
-from mpmath import primepi
-
+from mpmath import primepi      # count primes at most n
        
-def root(N,k):
-    """return integer part of kth root of N"""
-    # SAFELY
-    x0 = int(N**(1/k))
-    if (x0+1)**k <= N:
-        return x0+1
-    elif x0**k <= N:
-        return x0
-    elif (x0-1)**k <= N:
-        return x0-1
-    raise Exception
+def nth_root(N,k):
+    """Return greatest integer x such that x**k <= N"""
+    x = int(N**(1/k))      
+    while (x+1)**k <= N:
+        x += 1
+    while x**k > N:
+        x -= 1
+    assert x**k <= N < (x+1)**k    
+    return x
 
 for i in range(1,T+1):
     N = int(f.readline())
@@ -44,26 +38,16 @@ for i in range(1,T+1):
     if N == 1:
         answer = 0
     else:
+        # most waiters = sum(greatest k such that p**k <= N over p a prime less than or equal to N)
+        #              = pi(n) + pi(n**1/2) + pi(n**1/3) + pi(n**1/4) + ..              # by counting
+        # fewest waiters = pi(n)
         answer = 1
         k = 2
-        #x = int(N**(1/k))        # this was why I went wrong at N=125
-        x = root(N,k)
+        x = nth_root(N,k)
         while x >= 2:
             answer += primepi(x)
             k += 1
-            x = root(N,k)
-
-
-    # slow. agrees up to 125
-    """primes = sieve.sieve(N)
-    most = 1 + sum([int(math.floor(math.log(N,p))) for p in primes])
-    # p is counted for each k p**k is less than N
-    # so take pi(N) + pi(N**1/2) + pi(N**1/3) and so on
-    guess = max(len(primes),1)
-    #print answer,most-guess
-
-    print N, answer, most-guess
-    assert answer==most-guess"""
+            x = nth_root(N,k)
 
     print "Case #%d: %s" % (i,answer)
         
