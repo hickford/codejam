@@ -36,9 +36,6 @@ for i in range(1,T+1):
             straight = [x]
             straights.append(straight)
         #print straights
-        lengths = [len(straight) for straight in straights]
-        #print lengths
-        assert lengths == sorted(lengths,reverse=True)
     answer = 0
     if straights:
         answer = min(len(straight) for straight in straights)
