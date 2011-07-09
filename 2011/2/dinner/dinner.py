@@ -35,31 +35,31 @@ upper_bound = math.sqrt(10**12)
 
 import cPickle as pickle
 try:
-    g = open("primes.dump") # primes up to 10**6
+    g = open("primes.dump")
     primes = pickle.load(g)
     g.close()
 except:
     def sieve(n = None, primelist = [2]):
-	    """Iterator. Yield primes [less than or equal to n]"""
-	    for p in primelist:
-		    if n and p > n:
-			    raise StopIteration
-		    yield p
+        """Iterator. Yield primes [less than or equal to n]"""
+        for p in primelist:
+            if n and p > n:
+                raise StopIteration
+            yield p
 
-	    x = primelist[-1]+1
-		
-	    while not n or x <= n:
-		    limit = int(math.sqrt(x))
-		    for p in primelist:
-			    if p > limit:
-				    # x is prime
-				    primelist.append(x)
-				    yield x
-				    break
-			    if x % p == 0:
-				    # x is composite
-				    break
-		    x += 1
+        x = primelist[-1]+1
+        
+        while not n or x <= n:
+            limit = int(math.sqrt(x))
+            for p in primelist:
+                if p > limit:
+                    # x is prime
+                    primelist.append(x)
+                    yield x
+                    break
+                if x % p == 0:
+                    # x is composite
+                    break
+            x += 1
     primes = list(sieve(upper_bound))
     g = open("primes.dump",'wb')
     pickle.dump(primes,g,-1)
@@ -75,11 +75,9 @@ assert primepi(1) == 0
 assert primepi(2) == 1
 assert primepi(100) == 25
 
-for i in range(1,T+1):
-    N = int(f.readline())
-    answer = 0
+def spread(N):
     if N == 1:
-        answer = 0
+        return 0
     else:
         # most waiters = sum(greatest k such that p**k <= N over p a prime less than or equal to N)
         #              = pi(n) + pi(n**1/2) + pi(n**1/3) + pi(n**1/4) + ..              # by counting
@@ -91,6 +89,27 @@ for i in range(1,T+1):
             answer += primepi(x)
             k += 1
             x = nth_root(N,k)
+        return answer
 
+def ilog(N,p):
+    """Return greatest integer exponent x such that p**x <= N"""
+    x = int(math.log(N,p))
+    while p**(x+1) <= N:
+        x += 1
+    while p**x > N:
+        x -= 1
+    assert p**x <= N < p**(x+1)    
+    return x
+        
+def spread2(N):
+    """slow"""
+    P = primes[:bisect.bisect(primes,N)]
+    most = 1+sum([ilog(N,p) for p in P])
+    least = max(1,primepi(N))
+    return most-least
+   
+for i in range(1,T+1):
+    N = int(f.readline())
+    answer = spread(N)
     print "Case #%d: %s" % (i,answer)
 

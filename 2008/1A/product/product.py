@@ -22,6 +22,9 @@ def vproduct(X,Y):
     return sum(x*y for (x,y) in zip(X,Y))
     
 T = int(f.readline())
+
+# if a < b and x < y then ay+bx<ax+by
+
 for i in range(1,T+1):
     n = int(f.readline())
     X = [int(x) for x in f.readline().split()]

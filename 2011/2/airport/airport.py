@@ -1,5 +1,5 @@
 #!python
-# http://code.google.com/codejam/contest/dashboard?c=1150486#s=p0
+# Airport Walkways http://code.google.com/codejam/contest/dashboard?c=1150486#s=p0
 from __future__ import division
 import math
 import sys
@@ -65,7 +65,8 @@ for i in range(1,T+1):
             else:
                 # sprint the start
                 d1 = v1 * sprintwatch
-                t1 = d1/v1
+                #t1 = d1/v1
+				t1 = sprintwatch
                 sprintwatch -= t1
                 assert sprintwatch == 0
                 clock += t1

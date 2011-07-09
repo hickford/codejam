@@ -23,5 +23,5 @@ T = int(f.readline())
 for i in range(1,T+1):
     L,P,C = ( int(x) for x in f.readline().split() )
     s = math.ceil(math.log(P/L,C))       # how many powers of C apart?
-    X = math.ceil(math.log(s,2))         # binary search among powers
+    X = math.ceil(math.log(s,2))         # binary search among these powers
     print "Case #%d: %d" % (i,X)

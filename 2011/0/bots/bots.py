@@ -11,8 +11,8 @@ if args:
         f = sys.stdin
     else:
         f = open(args[0])
-elif not sys.stdin.isatty():
-    f = sys.stdin
+#elif not sys.stdin.isatty():
+#    f = sys.stdin
 else:
     parser.error("Need input from file or stdin")
 
