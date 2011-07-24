@@ -34,3 +34,4 @@ for i in range(1,T+1):
     #print A
     for a in range(1,N+1):
         print len(A[a])
+        
