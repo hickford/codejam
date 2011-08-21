@@ -24,27 +24,17 @@ def left(n):
     
 class BooleanTree:
     def __init__(self,nodeinfo,debug=False,adamsize=None):
-        self.M = len(nodeinfo)
-        self.leaf = (self.M == 1)
+        self.leaf = (len(nodeinfo) == 1)
         if self.leaf:
             self.value = nodeinfo[0]
-        self.adamsize = adamsize if adamsize else self.M
+        self.adamsize = adamsize if adamsize else len(nodeinfo)
         self.solutions = dict()
         if debug:
             print nodeinfo
         if not self.leaf:
             self.gate,self.changeable = nodeinfo[0]
-            leftinfo = list()
-            rightinfo = list()
-            for (i,x) in enumerate(nodeinfo):
-                if i == 0:
-                    continue
-                if left(i):
-                    leftinfo.append(x)
-                else:
-                    rightinfo.append(x)
-            self.left = BooleanTree(leftinfo,adamsize=self.adamsize)
-            self.right = BooleanTree(rightinfo,adamsize=self.adamsize)
+            self.left = BooleanTree([x for (i,x) in enumerate(nodeinfo) if left(i)],adamsize=self.adamsize)
+            self.right = BooleanTree([x for (i,x) in enumerate(nodeinfo) if i>0 and not left(i)],adamsize=self.adamsize)
         
     def ma(self,V):
         """What is the minimum number of gates that can be changed to make the root of this boolean tree evaluate to V? Return a number greater than the number of nodes M if not possible."""
@@ -67,6 +57,7 @@ class BooleanTree:
                         elif self.changeable:
                             penalty = 1
                         else:
+                            # penalty = self.adamsize+1
                             continue
                         l = self.left.ma(i)
                         r = self.right.ma(j)
