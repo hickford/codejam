@@ -23,14 +23,14 @@ def left(n):
     return n == 1
     
 class BooleanTree:
-    def __init__(self,nodeinfo,debug=False):
+    def __init__(self,nodeinfo,debug=False,adamsize=None):
         self.M = len(nodeinfo)
         self.leaf = (self.M == 1)
         if self.leaf:
             self.value = nodeinfo[0]
+        self.adamsize = adamsize if adamsize else self.M
         self.solutions = dict()
         if debug:
-            self.nodeinfo = nodeinfo
             print nodeinfo
         if not self.leaf:
             self.gate,self.changeable = nodeinfo[0]
@@ -43,70 +43,36 @@ class BooleanTree:
                     leftinfo.append(x)
                 else:
                     rightinfo.append(x)
-            self.left = BooleanTree(leftinfo)
-            self.right = BooleanTree(rightinfo)
+            self.left = BooleanTree(leftinfo,adamsize=self.adamsize)
+            self.right = BooleanTree(rightinfo,adamsize=self.adamsize)
         
     def ma(self,V):
+        """What is the minimum number of gates that can be changed to make the root of this boolean tree evaluate to V? Return a number greater than the number of nodes M if not possible."""
         try:
             return self.solutions[V]
         except KeyError:
             pass
+            
         if self.leaf:
-            self.solutions[V] = 0 if self.value == V else False
+            self.solutions[V] = 0 if self.value == V else self.adamsize+1
             return self.solutions[V]
-        possibles = list()
-        if V == 0:
-            if self.gate == "or" or self.changeable:
-                penalty = 1 if (self.changeable and self.gate != "or") else 0
-                # 0 = 0 or 0 only
-                l = self.left.ma(0)
-                r = self.right.ma(0)
-                if l is not False and r is not False:
-                    possibles.append( penalty + l + r)
-            if self.gate == "and" or self.changeable:
-                penalty = 1 if (self.changeable and self.gate != "and") else 0
-                # 0 = 0 and 1
-                l = self.left.ma(0)
-                r = self.right.ma(1)
-                if l is not False and r is not False:
-                    possibles.append( penalty + l + r)            
-                # 0 = 1 and 0
-                l = self.left.ma(1)
-                r = self.right.ma(0)
-                if l is not False and r is not False:
-                    possibles.append( penalty + l + r)            
-                # 0 = 0 and 0
-                l = self.left.ma(0)
-                r = self.right.ma(0)
-                if l is not False and r is not False:
-                    possibles.append( penalty + l + r)                   
-        elif V==1:
-            if self.gate == "or" or self.changeable:
-                penalty = 1 if (self.changeable and self.gate != "or") else 0
-                # 1 = 0 or 1
-                l = self.left.ma(0)
-                r = self.right.ma(1)
-                if l is not False and r is not False:
-                    possibles.append( penalty + l + r)            
-                # 1 = 1 or 0
-                l = self.left.ma(1)
-                r = self.right.ma(0)
-                if l is not False and r is not False:
-                    possibles.append( penalty + l + r)            
-                # 1 = 1 or 1
-                l = self.left.ma(1)
-                r = self.right.ma(1)
-                if l is not False and r is not False:
-                    possibles.append( penalty + l + r)                   
-            if self.gate == "and" or self.changeable:
-                penalty = 1 if (self.changeable and self.gate != "and") else 0
-                # 1 = 1 and 1 only
-                l = self.left.ma(1)
-                r = self.right.ma(1)
-                if l is not False and r is not False:
-                    possibles.append( penalty + l + r)
-        
-        self.solutions[V] = min(possibles) if possibles else self.M+1
+            
+        possibles = [self.adamsize+1]
+        for logic in (operator.or_, operator.and_):
+            for i in (0,1):
+                for j in (0,1):
+                    if logic(i,j)==V:
+                        if self.gate == logic:
+                            penalty = 0
+                        elif self.changeable:
+                            penalty = 1
+                        else:
+                            continue
+                        l = self.left.ma(i)
+                        r = self.right.ma(j)
+                        possibles.append(penalty+l+r)
+                        
+        self.solutions[V] = min(possibles)
         return self.solutions[V]
         
         
@@ -122,14 +88,13 @@ for i in range(1,T+1):
     for j in range( (M-1)//2 ):
         G, C = [int(x) for x in f.readline().split()]
         C = bool(C)
-        G = "and" G == 1 else "or"
+        G = operator.and_ if G == 1 else operator.or_
         nodeinfo.append((G,C))
     #The next (M+1)/2 lines describe the leaf nodes. Each line contains one value I, 0 or 1, the value of the leaf node.
     for j in range( (M+1)//2 ):
         I = int(f.readline())
         nodeinfo.append(I)
-    
     T = BooleanTree(nodeinfo,debug=False)
     x = T.ma(V)
-    answer = "IMPOSSIBLE" if x is False else x
+    answer = "IMPOSSIBLE" if x > M else x
     print "Case #%d: %s" % (i,answer)
