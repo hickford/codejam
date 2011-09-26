@@ -1,20 +1,8 @@
 #!python
 # Cheating a Boolean Tree http://code.google.com/codejam/contest/dashboard?c=32001#s=p0
-import sys
-from optparse import OptionParser
 import operator
-usage = "usage: %prog input"
-parser = OptionParser(usage=usage)
-(options, args) = parser.parse_args()
-if args:
-    if args[0] == "-":
-        f = sys.stdin
-    else:
-        f = open(args[0])
-elif not sys.stdin.isatty():
-    f = sys.stdin
-else:
-    parser.error("Need input from file or stdin")
+import fileinput
+f = fileinput.input()
     
 def left(n):
     """Is node n a left descendant of the root in a zero-indexed boolean tree?"""
@@ -65,8 +53,6 @@ class BooleanTree:
                         
         self.solutions[V] = min(possibles)
         return self.solutions[V]
-        
-        
         
 T = int(f.readline())
                       

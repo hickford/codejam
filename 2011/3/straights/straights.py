@@ -2,6 +2,7 @@
 # Dire Straights http://code.google.com/codejam/contest/dashboard?c=1158485#s=p1
 import fileinput
 f = fileinput.input()
+
 T = int(f.readline())
 
 for i in range(1,T+1):
