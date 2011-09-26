@@ -38,11 +38,13 @@ class Cake:
     def __init__(self,Lower,Upper):
         if  Lower.left != Upper.left or Lower.right != Upper.right :
             raise ValueError
-        self.Lower = Lower
-        self.Upper = Upper
+        self.Xes = sorted(set(Lower.Xes+Upper.Xes))
+        self.Lower1 = Lower
+        self.Upper1 = Upper
+        self.Lower = Polyline([ (x,Lower.y(x))  for x in self.Xes ])
+        self.Upper = Polyline([ (x,Upper.y(x))  for x in self.Xes ])
         self.left = Lower.left
         self.right = Lower.right
-        self.Xes = sorted(set(Lower.Xes+Upper.Xes))
         self.areas = OrderedDict()
         self.areas[self.left] = 0
         x0 = self.left
@@ -73,7 +75,6 @@ class Cake:
         height0 = self.Upper.y(x0) - self.Lower.y(x0)
         height1 = self.Upper.y(x1) - self.Lower.y(x1)
         return area0 + width * (height0 + height1) / 2
-
         
     def take(self,portion):
         """Return a such that area to the left of vertical line x=a is portion"""
@@ -86,8 +87,8 @@ class Cake:
                 break
             x0 = x2
         # binary search using area_left
-        error = 10e-6 / 10
-        while abs(float(x0) - float(x2)) > error:
+        error = 10e-6 / 4
+        while abs(x0 - x2) > error:
             #print x0,x2, x>x2
             x1 = (x0+x2)/2
             if self.area_left(x1) < portion:
@@ -103,6 +104,9 @@ class Cake:
             portion = self.whole * i/G
             cuts.append( self.take(portion) )
         return cuts
+        
+    def __repr__(self):
+        return "Cake(%s,%s)" % (repr(self.Lower1,self.Upper1))
     
 for case in range(1,T+1):
     W,L,U,G = [int(x) for x in f.readline().split()]
