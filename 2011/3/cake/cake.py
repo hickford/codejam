@@ -1,6 +1,7 @@
 #!python
 # Irregular cakes http://code.google.com/codejam/contest/dashboard?c=1158485#s=p0
 from __future__ import division
+from collections import OrderedDict
 import fileinput
 f = fileinput.input()
 T = int(f.readline())
@@ -11,8 +12,13 @@ class Polyline:
         self.left = points[0][0]
         self.right = points[-1][0]
         self.Xes = [x for (x,y) in self.points]
+        self.Y = dict(self.points)
         
     def y(self,x):
+        try:
+            return self.Y[x]
+        except KeyError:
+            pass
         if not self.left <= x <= self.right:
             raise ValueError
         x1,y1 = self.points[0]
@@ -20,9 +26,9 @@ class Polyline:
             if x2 >= x:
                 break
             x1,y1 = x2,y2
-        assert x1 <= x <= x2
+        #assert x1 <= x <= x2
         y = y1 + (y2-y1)*(x-x1)/(x2-x1)
-        assert y1 <= y <= y2 or y1 >= y >= y2
+        #assert y1 <= y <= y2 or y1 >= y >= y2
         return y
         
     def __repr__(self):
@@ -37,26 +43,41 @@ class Cake:
         self.left = Lower.left
         self.right = Lower.right
         self.Xes = sorted(set(Lower.Xes+Upper.Xes))
-        self.areas = dict( (a,self.area_left(a)) for a in self.Xes )
-        
-    def area_left(self,a):
-        """Return area to the left of vertical line x=a"""
-        # sum trapeziums
-        area = 0
+        self.areas = OrderedDict()
+        self.areas[self.left] = 0
         x0 = self.left
-        for x1 in sorted(set(self.Xes+[a]))[1:]:
-            if x1 > a:
-                break
+        area = 0
+        for x1 in self.Xes[1:]:
             width = x1 - x0
             height0 = self.Upper.y(x0) - self.Lower.y(x0)
             height1 = self.Upper.y(x1) - self.Lower.y(x1)
             area += width * (height0 + height1) / 2
-            x0 = x1       
-        return area
+            self.areas[x1] = area
+            x0 = x1
+        self.whole = area
+        
+    def area_left(self,a):
+        """Return area to the left of vertical line x=a"""
+        # sum trapeziums
+        try:
+            return self.areas[a]
+        except KeyError:
+            pass
+        x0, area0 = self.left, 0
+        x1 = a
+        for x,area in self.areas.items():
+            if x > a:
+                break
+            x0, area0 = x, area
+        width = x1 - x0
+        height0 = self.Upper.y(x0) - self.Lower.y(x0)
+        height1 = self.Upper.y(x1) - self.Lower.y(x1)
+        return area0 + width * (height0 + height1) / 2
+
         
     def take(self,portion):
         """Return a such that area to the left of vertical line x=a is portion"""
-        if portion < 0 or portion > self.areas[self.right]:
+        if portion < 0 or portion > self.whole:
             raise ValueError
         # foreplay to binary search
         x0 = self.left
@@ -65,7 +86,7 @@ class Cake:
                 break
             x0 = x2
         # binary search using area_left
-        error = 10e-6 
+        error = 10e-6 / 10
         while abs(float(x0) - float(x2)) > error:
             #print x0,x2, x>x2
             x1 = (x0+x2)/2
@@ -77,11 +98,9 @@ class Cake:
         
     def cut(self,G):
         """Return a list length G-1 of x co-ordinates for vertical cuts to divide the cake into G equal pieces"""
-        # really slow :(
-        whole = self.areas[self.right]
         cuts = list()
         for i in range(1,G):
-            portion = whole * i/G
+            portion = self.whole * i/G
             cuts.append( self.take(portion) )
         return cuts
     
@@ -92,5 +111,6 @@ for case in range(1,T+1):
     cake = Cake(Lower,Upper)
    
     print "Case #%d:" % case
-    for x in cake.cut(G):
+    cuts = cake.cut(G)
+    for x in cuts:
         print x
