@@ -3,6 +3,7 @@
 from __future__ import division
 from collections import OrderedDict
 import fileinput
+import math
 f = fileinput.input()
 T = int(f.readline())
 
@@ -26,9 +27,7 @@ class Polyline:
             if x2 >= x:
                 break
             x1,y1 = x2,y2
-        #assert x1 <= x <= x2
         y = y1 + (y2-y1)*(x-x1)/(x2-x1)
-        #assert y1 <= y <= y2 or y1 >= y >= y2
         return y
         
     def __repr__(self):
@@ -86,16 +85,43 @@ class Cake:
             if self.areas[x2] > portion:
                 break
             x0 = x2
-        # binary search using area_left
-        error = 10e-6 / 4
-        while abs(x0 - x2) > error:
-            #print x0,x2, x>x2
-            x1 = (x0+x2)/2
-            if self.area_left(x1) < portion:
-                x0, x2 = x1, x2
-            else:
-                x0, x2 = x0, x1
-        return (x0+x2)/2
+            
+        remaining = portion - self.areas[x0]
+        assert remaining >= 0
+        height0 = self.Upper.y(x0) - self.Lower.y(x0)
+        height2 = self.Upper.y(x2) - self.Lower.y(x2)
+        width = x2-x0
+            
+        # height1 = (1-r)*height0+r*height2    
+        
+        # remaining = r*width*(height0+height1)/2
+        # 2*remaining = r*width*((2-r)*height0+r*height2)
+        # 0 = (width*height2-width*height0)*r**2 + (width*2*height0)*r - 2*remaining
+        # 0 = a*r**2 + b*r + c
+        a = (width*height2-width*height0)
+        b = (width*2*height0)
+        c = -2*remaining
+        
+        if a == 0:  # linear
+            r = -c/b
+        else:   # a > 1e-6:       # quadratic
+            r = (-b+math.sqrt(b**2-4*a*c))/(2*a)
+        x1 = x0+r*width
+        if abs(self.area_left(x1)-portion)<1e-6:
+            # all is good
+            return x1
+        else:   # precision error
+            print "BOO"
+            # binary search using area_left SLOW
+            error = 10e-6 / 4
+            while abs(x0 - x2) > error:
+                #print x0,x2, x>x2
+                x1 = (x0+x2)/2
+                if self.area_left(x1) < portion:
+                    x0, x2 = x1, x2
+                else:
+                    x0, x2 = x0, x1
+            return (x0+x2)/2
         
     def cut(self,G):
         """Return a list length G-1 of x co-ordinates for vertical cuts to divide the cake into G equal pieces"""
