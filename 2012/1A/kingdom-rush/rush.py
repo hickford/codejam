@@ -26,12 +26,12 @@ def solve(levels):
             continue
             
         # otherwise, ask which 1-star levels can we play
-        one_star_indices = [i for i,level in enumerate(levels) if level[0] <= stars and level[0] != None]
+        one_star_indices = [i for i,level in enumerate(levels) if level[0] != None and level[0] <= stars ]
         
         if one_star_indices:
             # play the 1-star level with hardest 
-            i = one_star_indices[-1]    # play accessible level with 
-            levels[i][0] = None         # mark this 1-star level unplayable
+            i = one_star_indices[-1]
+            levels[i][0] = None         # mark the 1-star level as unplayable
             
             played += 1
             stars += 1
