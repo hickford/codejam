@@ -2,6 +2,6 @@
 
 *~
 
-*practice.in
-*practice.out
-
+*.in
+*.out
+!sample.in
