@@ -32,7 +32,7 @@ def solve(chests, keys):
                 # Don't have a key to open this chest.
                 continue
                 
-            # Check for bad prefix.
+            # Skip prefixes we discounted earlier.
             if frozenset(explored+[i]) in bad_prefixes:
                 continue
                 
@@ -51,7 +51,7 @@ def solve(chests, keys):
             # There is no solution below us.
             if not explored:
                 # The whole puzzle is impossible.
-                print >> sys.stderr, len(bad_prefixes)
+                # print >> sys.stderr, len(bad_prefixes)
                 return None
             
             bad_prefixes.add(frozenset(explored))
