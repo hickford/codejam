@@ -13,6 +13,15 @@ max_key = 200
 T = int(f.readline())
 
 def solve(chests, keys):
+    keys = numpy.copy(keys)
+
+    # first, check a quick necessary condition
+    keys_across_universe = keys + sum(chest.inside for chest in chests)
+    required = Counter(chest.lock for chest in chests)
+    required = numpy.array([required[key] for key in range(max_key+1)])
+    if any(required > keys_across_universe):
+        return False
+    
     explored = list()
     bad_prefixes = set()
            
@@ -52,7 +61,7 @@ def solve(chests, keys):
             if not explored:
                 # The whole puzzle is impossible.
                 # print >> sys.stderr, len(bad_prefixes)
-                return None
+                return False
             
             bad_prefixes.add(frozenset(explored))
             
@@ -93,7 +102,7 @@ for case in range(1,T+1):
         chest.lock = Ti
         chest.inside = inside
         chests.append(chest)
-
+       
     solution = solve(chests, initial_keys)
     if solution:
         answer = " ".join(str(n+1) for n in solution)
