@@ -9,18 +9,6 @@ def f(n,r):
 	"""Area of bullseye with n rings, inner radius r, as a multiple of pi."""
 	return 2*n**2 + n*(2*r-1)
 
-def solve2(r,t):
-	"""Solve using quadratic equation"""
-	import gmpy
-	from gmpy import mpz
-
-	a = 2
-	b = 2*r - 1
-	c = -t
-
-	x = (-b + mpz(b**2 - 4*a*c).sqrt()) // (2*a) 
-	return int(x)
-
 assert f(0,0) == 0
 assert f(0,1) == 0
 assert f(1,0) == 1
@@ -32,11 +20,23 @@ assert f(3,0) == 1+5+9
 assert f(3,1) == 3+7+11
 
 def solve(r,t):
-	"""Maximum number of black rings that Maria can draw, with inner radius r, given pi*t of paint.."""
+	"""Maximum number of black rings that Maria can draw, with inner radius r, given pi*t of paint. By binary search. """
 	return binary_search(lambda n: f(n, r), t)
 
+def solve2(r,t):
+	"""Maximum number of black rings that Maria can draw, with inner radius r, given pi*t of paint. Solve using quadratic equation"""
+	import gmpy
+	from gmpy import mpz
+
+	a = 2
+	b = 2*r - 1
+	c = -t
+
+	x = (-b + mpz(b**2 - 4*a*c).sqrt()) // (2*a) 
+	return int(x)
+
 def binary_search(f, t):
-	"""Find the greatest positive integer n such that f(n) <= t , assuming f is increasing. By binary search. Or return 0 if f(1) > t"""
+	"""Find the greatest positive integer n such that f(n) <= t , assuming f is increasing. Or return 0 if f(1) > t"""
 	if f(1) > t:
 		return 0
 
