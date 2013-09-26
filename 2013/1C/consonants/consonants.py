@@ -1,10 +1,12 @@
 #!python
+# https://code.google.com/codejam/contest/2437488/dashboard#s=p0
 import string
 
 vowels = "aeiou"
 consonants = "".join(x for x in string.ascii_lowercase if x not in vowels)
 
 def solve(name, n):
+    """number of substrings with at least n consecutive consonants in the name"""
     assert 0 < n <= len(name)
     value = 0
 
