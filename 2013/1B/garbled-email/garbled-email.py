@@ -13,20 +13,28 @@ trie = datrie.Trie(ascii_lowercase)
 for word in words:
     trie[word] = True
 
+class MinDict(dict):
+    def __setitem__(self, key, value):
+        oldvalue = self.get(key, None)
+        if oldvalue == None or value < oldvalue:
+            dict.__setitem__(self, key, value)
+
 def solve(email):
-    hypotheticals = [("", 0, 0)]    # prefix, cost, time until allowed next edit
+    # costs by (prefix, time allowed until next edit)
+    costs = MinDict()
+    costs["", 0] = 0
+
     for i, x in enumerate(email):
-        new_hypotheticals = []
-        for (prefix, cost, time) in hypotheticals:
+        new_costs = MinDict()
+        for (prefix, time), cost in costs.items():
             # try with letter from garbled email
             new_prefix = prefix + x
             new_time = max(0, time-1)
             new_cost = cost
             if trie.has_keys_with_prefix(new_prefix):
-                new_hypotheticals.append((new_prefix, new_cost, new_time))
+                new_costs[new_prefix, new_time] = new_cost
                 if new_prefix in trie:
-                    # print(new_prefix)
-                    new_hypotheticals.append(("", new_cost, new_time))
+                    new_costs["", new_time] = new_cost
 
             # try making edit (if allowed)
             if time > 0:
@@ -39,14 +47,13 @@ def solve(email):
                 new_prefix = prefix + a
                 new_time = 5
                 if trie.has_keys_with_prefix(new_prefix):
-                    new_hypotheticals.append((new_prefix, new_cost, new_time))
+                    new_costs[new_prefix, new_time] = new_cost
                     if new_prefix in trie:
-                        new_hypotheticals.append(("", new_cost, new_time))
+                        new_costs["", new_time] = new_cost
         
-        #print(new_hypotheticals)
-        hypotheticals = new_hypotheticals
-    # print(hypotheticals)
-    return min(cost for (prefix, cost, time) in hypotheticals if prefix == "")
+        costs = new_costs
+
+    return min(cost for (prefix, time), cost in costs.items() if prefix == "")
 
 if __name__ == "__main__":
     import fileinput
