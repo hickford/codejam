@@ -7,8 +7,8 @@ You know that the email was originally made out of words from the dictionary des
 What is the minimum number of letters that could have been changed?"""
 
 from string import ascii_lowercase
-import os.path
 from datrie import Trie # pip install datrie
+import os.path
 
 trie_path = 'trie.dump'
 if os.path.exists(trie_path):
@@ -35,7 +35,7 @@ class MinDict(dict):
         if oldvalue == None or value < oldvalue:
             dict.__setitem__(self, key, value)
 
-def solve(email):
+def solve(email, min_gap = 5):
     # costs by (prefix, time allowed until next edit)
     costs = MinDict()
     costs["", 0] = 0
@@ -43,7 +43,7 @@ def solve(email):
     for i, x in enumerate(email):
         new_costs = MinDict()
         for (prefix, time), cost in costs.items():
-            # try with letter from garbled email
+            # try with letter as in email
             new_prefix = prefix + x
             new_time = max(0, time-1)
             new_cost = cost
@@ -58,10 +58,10 @@ def solve(email):
             new_cost = cost + 1
             for a in ascii_lowercase:
                 if a == x:
-                    # already considered (for cheaper) above
+                    # already considered above for cheaper
                     continue
                 new_prefix = prefix + a
-                new_time = 4 # after 4 more decrements, can make edit again
+                new_time = min_gap - 1 # after 4 more letters, can make edit again
                 if trie.has_keys_with_prefix(new_prefix):
                     new_costs[new_prefix, new_time] = new_cost
                     if new_prefix in trie:
@@ -69,10 +69,11 @@ def solve(email):
         
         costs = new_costs
 
-    good_costs = [cost for (prefix, time), cost in costs.items() if prefix == ""]
-    if not good_costs:
+    # ignore any solutions with incomplete final word
+    complete_costs = [cost for (prefix, time), cost in costs.items() if prefix == ""]
+    if not complete_costs:
         return "IMPOSSIBLE"
-    return min(good_costs)
+    return min(complete_costs)
 
 if __name__ == "__main__":
     import fileinput
@@ -80,5 +81,5 @@ if __name__ == "__main__":
     T = int(f.readline())
     for case in range(1, T+1):
         email = f.readline().strip()
-        answer = solve(email)
+        answer = solve(email, 5)
         print("Case #%d: %s" % (case, answer))
