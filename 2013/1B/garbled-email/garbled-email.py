@@ -7,16 +7,29 @@ You know that the email was originally made out of words from the dictionary des
 What is the minimum number of letters that could have been changed?"""
 
 from string import ascii_lowercase
-import datrie # pip install datrie
+import os.path
+from datrie import Trie # pip install datrie
 
-with open('garbled_email_dictionary.txt') as f:
-    words = [line.strip() for line in f.readlines()]
+trie_path = 'trie.dump'
+if os.path.exists(trie_path):
+    trie = Trie.load(trie_path)
+else:
+    dict_path = "garbled_email_dictionary.txt"
+    dict_url = "https://code.google.com/codejam/contest/static/garbled_email_dictionary.txt"
+    if not os.path.exists(dict_path):
+        from urllib.request import urlretrieve
+        urlretrieve(dict_url, dict_path)
 
-trie = datrie.Trie(ascii_lowercase)
-for word in words:
-    trie[word] = True
+    with open(dict_path) as f:
+        words = [line.strip() for line in f.readlines()]
+
+    trie = Trie(ascii_lowercase)
+    for word in words:
+        trie[word] = True
+    trie.save(trie_path)
 
 class MinDict(dict):
+    """Dictionary that only []overwrites values with smaller values"""
     def __setitem__(self, key, value):
         oldvalue = self.get(key, None)
         if oldvalue == None or value < oldvalue:
@@ -45,10 +58,10 @@ def solve(email):
             new_cost = cost + 1
             for a in ascii_lowercase:
                 if a == x:
-                    # already considered above
+                    # already considered (for cheaper) above
                     continue
                 new_prefix = prefix + a
-                new_time = 4
+                new_time = 4 # after 4 more decrements, can make edit again
                 if trie.has_keys_with_prefix(new_prefix):
                     new_costs[new_prefix, new_time] = new_cost
                     if new_prefix in trie:
@@ -56,7 +69,10 @@ def solve(email):
         
         costs = new_costs
 
-    return min(cost for (prefix, time), cost in costs.items() if prefix == "")
+    good_costs = [cost for (prefix, time), cost in costs.items() if prefix == ""]
+    if not good_costs:
+        return "IMPOSSIBLE"
+    return min(good_costs)
 
 if __name__ == "__main__":
     import fileinput
