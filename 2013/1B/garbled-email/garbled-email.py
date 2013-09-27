@@ -8,8 +8,9 @@ What is the minimum number of letters that could have been changed?"""
 
 from string import ascii_lowercase
 from datrie import Trie # pip install datrie
-import os.path
+import os.path, sys
 
+# restore trie, else download and make one
 trie_path = 'trie.dump'
 if os.path.exists(trie_path):
     trie = Trie.load(trie_path)
@@ -36,21 +37,21 @@ class MinDict(dict):
             dict.__setitem__(self, key, value)
 
 def solve(email, min_gap = 5):
-    # costs by (prefix, time allowed until next edit)
+    # (cost, sentence) by (prefix, time allowed until next edit)
     costs = MinDict()
-    costs["", 0] = 0
+    costs["", 0] = (0, [])
 
     for i, x in enumerate(email):
         new_costs = MinDict()
-        for (prefix, time), cost in costs.items():
+        for (prefix, time), (cost, sentence) in costs.items():
             # try with letter as in email
             new_prefix = prefix + x
             new_time = max(0, time-1)
             new_cost = cost
             if trie.has_keys_with_prefix(new_prefix):
-                new_costs[new_prefix, new_time] = new_cost
+                new_costs[new_prefix, new_time] = (new_cost, sentence)
                 if new_prefix in trie:
-                    new_costs["", new_time] = new_cost
+                    new_costs["", new_time] = (new_cost, sentence + [new_prefix])
 
             # try making edit (if allowed)
             if time > 0:
@@ -63,17 +64,19 @@ def solve(email, min_gap = 5):
                 new_prefix = prefix + a
                 new_time = min_gap - 1 # after 4 more letters, can make edit again
                 if trie.has_keys_with_prefix(new_prefix):
-                    new_costs[new_prefix, new_time] = new_cost
+                    new_costs[new_prefix, new_time] = (new_cost, sentence)
                     if new_prefix in trie:
-                        new_costs["", new_time] = new_cost
+                        new_costs["", new_time] = (new_cost, sentence + [new_prefix])
         
         costs = new_costs
 
     # ignore any solutions with incomplete final word
-    complete_costs = [cost for (prefix, time), cost in costs.items() if prefix == ""]
+    complete_costs = [(cost, sentence) for (prefix, time), (cost, sentence) in costs.items() if prefix == ""]
     if not complete_costs:
         return "IMPOSSIBLE"
-    return min(complete_costs)
+    cost, sentence = min(complete_costs, key = lambda pair: pair[0])    
+    # print(" ".join(sentence), file = sys.stderr) # disappointingly boring!
+    return cost
 
 if __name__ == "__main__":
     import fileinput
