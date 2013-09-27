@@ -2,12 +2,10 @@
 # https://code.google.com/codejam/contest/2434486/dashboard#s=p2
 
 from string import ascii_lowercase
-import datrie
+import datrie # pip install datrie
 
 with open('garbled_email_dictionary.txt') as f:
     words = [line.strip() for line in f.readlines()]
-
-# trie = marisa_trie.Trie
 
 trie = datrie.Trie(ascii_lowercase)
 for word in words:
