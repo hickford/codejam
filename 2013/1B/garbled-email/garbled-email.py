@@ -10,7 +10,7 @@ from string import ascii_lowercase
 from datrie import Trie # pip install datrie
 import os.path, sys
 
-# restore trie, else download and make one
+# restore trie, else download dictionary and make it
 trie_path = 'trie.dump'
 if os.path.exists(trie_path):
     trie = Trie.load(trie_path)
@@ -30,7 +30,7 @@ else:
     trie.save(trie_path)
 
 class MinDict(dict):
-    """Dictionary that only []overwrites values with smaller values"""
+    """Dictionary that will only []-overwrite values with a smaller value"""
     def __setitem__(self, key, value):
         oldvalue = self.get(key, None)
         if oldvalue == None or value < oldvalue:
@@ -86,3 +86,4 @@ if __name__ == "__main__":
         email = f.readline().strip()
         answer = solve(email, 5)
         print("Case #%d: %s" % (case, answer))
+
