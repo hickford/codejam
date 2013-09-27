@@ -45,7 +45,7 @@ def solve(email):
                     # already considered above
                     continue
                 new_prefix = prefix + a
-                new_time = 5
+                new_time = 4
                 if trie.has_keys_with_prefix(new_prefix):
                     new_costs[new_prefix, new_time] = new_cost
                     if new_prefix in trie:
