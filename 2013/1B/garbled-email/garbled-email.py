@@ -1,5 +1,10 @@
 #!python3
-# https://code.google.com/codejam/contest/2434486/dashboard#s=p2
+# https://code.google.com/codejam/contest/2434486/dashboard#s=p2 
+""" Gagan just got an email from her friend Jorge. The email contains important information, but unfortunately it was corrupted when it was sent: all of the spaces are missing, and after the removal of the spaces, some of the letters have been changed to other letters! All Gagan has now is a string S of lower-case characters.
+
+You know that the email was originally made out of words from the dictionary described below. You also know the letters were changed after the spaces were removed, and that the difference between the indices of any two letter changes is not less than 5. So for example, the string "code jam" could have become "codejam", "dodejbm", "zodejan" or "cidejab", but not "kodezam" (because the distance between the indices of the "k" change and the "z" change is only 4).
+
+What is the minimum number of letters that could have been changed?"""
 
 from string import ascii_lowercase
 import datrie # pip install datrie
