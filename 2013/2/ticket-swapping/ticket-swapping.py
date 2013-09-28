@@ -27,7 +27,8 @@ def solve(journeys, N):
 		change_by_station[start] += frequency
 		change_by_station[end] -= frequency
 
-	change_by_station = OrderedDict(change_by_station.items())
+	change_by_station = OrderedDict(sorted(change_by_station.items()))
+	assert sum(change_by_station.values()) == 0
 
 	clever_cost = 0
 
