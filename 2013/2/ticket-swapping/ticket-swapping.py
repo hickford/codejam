@@ -65,5 +65,5 @@ if __name__ == "__main__":
 			start, end, frequency = [int(x) for x in f.readline().split()]
 			journeys.append((start,end,frequency))
 
-		answer = solve(journeys, N)
+		answer = solve(journeys, N) % 1000002013
 		print("Case #%d: %s" % (case, answer))
