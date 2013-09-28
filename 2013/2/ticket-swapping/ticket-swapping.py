@@ -7,7 +7,7 @@ def cost(d, N):
     """The cost of travelling distance d on a line with N stations"""
     assert 0 <= d <= N-1
     return d*N - d*(d-1)//2
-	# worthy of note: when we come to compare swapping strategies, the d*N term in the cost function will cancel because the total distance travelled doesn't depend on how tickets are swapped. Still, I leave it in the cost function because positive costs are easier to think about.
+	# worthy of note: when we come to compare swapping strategies, the d*N terms will cancel because the total distance travelled is the same regardless how tickets are swapped. Still, I shall leave it in here because positive costs are easier to think about.
 
 def test_cost():
 	"""unit test with examples from problem statement"""
@@ -21,7 +21,7 @@ def test_cost():
 test_cost()
 
 def observe_shape():
-	"""A long journey and a short journey is always cheaper than two medium journeys (with the same total distance). This is because cost per unit travel decreases for longer journeys."""
+	"""A long journey and a short journey will always be cheaper than two medium journeys (of the same total distance). This is because cost per unit travel decreases with distance--we save more making one journey longer than we do making the other shorter."""
 	N = 10
 	assert cost(4, N) + cost(7, N) < cost(5, N) + cost(6, N)
 
@@ -62,7 +62,7 @@ def solve(journeys, N):
 				people_to_leave -= last_lot_to_leave
 				clever_cost += last_lot_to_leave * cost(station - last_station, N)
 				
-				# if we popped too many people, put the remainder back as they were (at their original station, not this one)
+				# if we popped too many people, put the remainder back exactly as they were
 				last_lot_to_remain = last_lot - last_lot_to_leave
 				if last_lot_to_remain > 0:
 					train[last_station] = last_lot_to_remain
