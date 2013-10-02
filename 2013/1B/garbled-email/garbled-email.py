@@ -7,26 +7,34 @@ You know that the email was originally made out of words from the dictionary des
 What is the minimum number of letters that could have been changed?"""
 
 from string import ascii_lowercase
-from datrie import Trie # pip install datrie
 import os.path, sys
 
-# restore trie, else download dictionary and make it
-trie_path = 'trie.dump'
+dict_path = "garbled_email_dictionary.txt"
+dict_url = "https://code.google.com/codejam/contest/static/garbled_email_dictionary.txt"
+if not os.path.exists(dict_path):
+    from urllib.request import urlretrieve
+    urlretrieve(dict_url, dict_path)
+
+with open(dict_path) as f:
+    words = [line.strip() for line in f.readlines()]
+
+if False:
+    from datrie import Trie # pip install datrie
+    trie_path = 'datrie.dump'
+else:
+    from marisa_trie import Trie # pip install marisa-trie
+    trie_path = 'marisa_trie.dump'   
+
 if os.path.exists(trie_path):
     trie = Trie.load(trie_path)
 else:
-    dict_path = "garbled_email_dictionary.txt"
-    dict_url = "https://code.google.com/codejam/contest/static/garbled_email_dictionary.txt"
-    if not os.path.exists(dict_path):
-        from urllib.request import urlretrieve
-        urlretrieve(dict_url, dict_path)
+    if Trie.__module__ == 'datrie':
+        trie = Trie(ascii_lowercase)
+        for word in words:
+            trie[word] = True
+    elif Trie.__module__ == 'marisa_trie':
+        trie = Trie(words)
 
-    with open(dict_path) as f:
-        words = [line.strip() for line in f.readlines()]
-
-    trie = Trie(ascii_lowercase)
-    for word in words:
-        trie[word] = True
     trie.save(trie_path)
 
 class MinDict(dict):
