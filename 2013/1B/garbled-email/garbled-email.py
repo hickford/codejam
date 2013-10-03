@@ -21,18 +21,25 @@ with open(dict_path) as f:
 if False:
     from datrie import Trie # pip install datrie
     trie_path = 'datrie.dump'
-else:
+elif False:
     from marisa_trie import Trie # pip install marisa-trie
     trie_path = 'marisa_trie.dump'   
+else:
+	from dawg import CompletionDAWG as Trie # pip install dawg
+	trie_path = 'dawg.dump' 
 
 if os.path.exists(trie_path):
-    trie = Trie.load(trie_path)
+	if Trie.__module__ == 'dawg':
+		trie = Trie()
+		trie.load(trie_path)
+	else:
+	    trie = Trie.load(trie_path)
 else:
     if Trie.__module__ == 'datrie':
         trie = Trie(ascii_lowercase)
         for word in words:
             trie[word] = True
-    elif Trie.__module__ == 'marisa_trie':
+    else:
         trie = Trie(words)
 
     trie.save(trie_path)
