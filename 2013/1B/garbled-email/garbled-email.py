@@ -9,15 +9,7 @@ What is the minimum number of letters that could have been changed?"""
 from string import ascii_lowercase
 import os.path, sys
 
-dict_path = "garbled_email_dictionary.txt"
-dict_url = "https://code.google.com/codejam/contest/static/garbled_email_dictionary.txt"
-if not os.path.exists(dict_path):
-    from urllib.request import urlretrieve
-    urlretrieve(dict_url, dict_path)
-
-with open(dict_path) as f:
-    words = [line.strip() for line in f.readlines()]
-
+# need fast trie (prefix tree) data structure. Choose from 3 libraries with (almost) compatible APIs.
 if False:
     from datrie import Trie # pip install datrie
     trie_path = 'datrie.dump'
@@ -25,16 +17,27 @@ elif False:
     from marisa_trie import Trie # pip install marisa-trie
     trie_path = 'marisa_trie.dump'   
 else:
-	from dawg import CompletionDAWG as Trie # pip install dawg
-	trie_path = 'dawg.dump' 
+    from dawg import CompletionDAWG as Trie # pip install dawg
+    trie_path = 'dawg.dump' 
 
 if os.path.exists(trie_path):
-	if Trie.__module__ == 'dawg':
-		trie = Trie()
-		trie.load(trie_path)
-	else:
-	    trie = Trie.load(trie_path)
+    # here's one i built earlier
+    if Trie.__module__ == 'dawg':
+        trie = Trie()
+        trie.load(trie_path)
+    else:
+        trie = Trie.load(trie_path)
 else:
+    dict_path = "garbled_email_dictionary.txt"
+    if not os.path.exists(dict_path):
+        # download code jam's dictionary 
+        dict_url = "https://code.google.com/codejam/contest/static/garbled_email_dictionary.txt"
+        from urllib.request import urlretrieve
+        urlretrieve(dict_url, dict_path)
+
+    with open(dict_path) as f:
+        words = [line.strip() for line in f.readlines()]
+
     if Trie.__module__ == 'datrie':
         trie = Trie(ascii_lowercase)
         for word in words:
@@ -45,7 +48,7 @@ else:
     trie.save(trie_path)
 
 class MinDict(dict):
-    """Dictionary that will only []-overwrite values with a smaller value"""
+    """Dictionary that will only []-overwrite values with a smaller value."""
     def __setitem__(self, key, value):
         oldvalue = self.get(key, None)
         if oldvalue == None or value < oldvalue:
@@ -101,4 +104,3 @@ if __name__ == "__main__":
         email = f.readline().strip()
         answer = solve(email, 5)
         print("Case #%d: %s" % (case, answer))
-
