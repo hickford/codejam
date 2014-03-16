@@ -11,20 +11,19 @@ import numpy as np
 
 def calculate_expected_profit(my_bets, totals, odds_against = None):
     """Calculate the expected profit"""
-    assert len(my_bets) == len(totals)
     if odds_against == None:
         odds_against = len(totals) - 1
 
-    my_bets = np.array(my_bets)
-    totals = np.array(totals)
+    assert len(my_bets) == len(totals)
     assert np.all(my_bets <= totals)
+
     min_total = np.min(totals)
     winning_bets = (totals == min_total)
     my_winning_bets = my_bets * winning_bets 
     return -np.sum(my_bets) + odds_against * np.sum(my_winning_bets) / np.sum(winning_bets)
 
 # unit tests
-assert calculate_expected_profit(np.array([1,1,2]),np.array([3,2,2])) == -4 + 2 * (0.5 * 1 + 0.5 * 2)
+assert calculate_expected_profit([1,1,2],[3,2,2]) == -4 + 2 * (0.5 * 1 + 0.5 * 2)
 
 def solve(budget, others_bets, size):
     others_bets = sorted(others_bets, reverse=True)
