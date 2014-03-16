@@ -52,6 +52,7 @@ def solve(budget, others_bets, size):
         i += 1
         i %= len(totals)
 
+    assert np.sum(my_bets) + np.sum(others_bets) == np.sum(totals)
     assert np.sum(my_bets) <= budget
     return best_so_far
 
