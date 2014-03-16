@@ -27,9 +27,8 @@ assert calculate_expected_profit([1,1,2],[3,2,2]) == -4 + 2 * (0.5 * 1 + 0.5 * 2
 
 def solve(budget, others_bets, size):
     others_bets = sorted(others_bets, reverse=True)
-    totals = np.zeros(size)
-    for i, x in enumerate(others_bets):
-        totals[i] = x
+    totals = np.array(others_bets)
+    totals.resize(size)
 
     my_bets = np.zeros_like(totals)
 
