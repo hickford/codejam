@@ -16,27 +16,31 @@ def solve(C, F, X):
     best_n = binary_creep(f)
     return f(best_n)
 
+def powers_of_two():
+    n = 1
+    while True:
+        yield n
+        n *= 2
+
 def binary_creep(f):
     # minimise convex function f over integers n . Return minimising n*
-    lower = 0 # lower bound for n*
-    n = 1
-    while f(n) < f(lower):
-        lower = n
-        n *= 2
+    for n in powers_of_two():
+        if f(n) >= f(n//2):
+            break
+            
     upper = n
+    lower = n//4
 
     while upper > lower + 1:
-        n = (upper + lower) // 2
-        assert lower < n < upper
-        if f(n) >= f(lower):
-            upper = n
+        upper_third = (lower + 2*upper)//3
+        lower_third = max((2*lower + upper)//3, lower + 1)
+        if f(upper_third) >= f(lower_third):
+            upper = upper_third
         else:
-            lower = n
-
-    assert upper == lower + 1
+            lower = lower_third
 
     n_best = lower if f(lower) <= f(upper) else upper
-    
+
     return n_best
 
 if __name__ == "__main__":
