@@ -36,7 +36,7 @@ def deceitful_war(naomi, ken):
     while naomi or ken:
         # naomi plays to win if she can, else uses her smallest block to rid bob of his largest
         left = naomi.pop(-1) if naomi[-1] > ken[-1] else naomi.pop(0)
-        right = ken.pop(-1)
+        right = ken.pop(-1) # Naomi also overestimates her winning blocks, to rid Bob of his best! This is crucial.
 
         naomi_score += left > right
 
