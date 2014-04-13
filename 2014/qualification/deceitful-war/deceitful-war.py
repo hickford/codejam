@@ -8,6 +8,7 @@ import bisect
 def war(naomi, ken):
     assert len(naomi) == len(ken)
     ken = sorted(ken)
+    naomi = list(naomi)
     
     naomi_score = 0
 
