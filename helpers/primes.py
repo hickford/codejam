@@ -45,7 +45,7 @@ class Primes:
     def __contains__(self, x):
         self._explore_to_bound(x)
         i = bisect.bisect_left(self.primes, x)
-        return self.primes[i] == x
+        return i < len(self.primes) and self.primes[i] == x
 
     def count(self, x):
         """Count the number of primes less than or equal to x"""

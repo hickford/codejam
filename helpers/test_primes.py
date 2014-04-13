@@ -10,10 +10,14 @@ class TestPrimes:
         primes = Primes()
         assert primes[0] == 2
         assert primes[9] == self.first_ten_primes[9]
+        assert primes[5] == self.first_ten_primes[5]
 
     def test_contains(self):
         primes = Primes()
-        assert 23 in primes
+        assert 31 in primes
+        assert 29 in primes
+        assert 25 not in primes
+        assert 100 not in primes
 
     def test_getitem_slice(self):
         primes = Primes()
@@ -26,6 +30,6 @@ class TestPrimes:
 
     def test_count(self):
         primes = Primes()
-        assert primes.count(100) == 25
         assert primes.count(97) == 25
+        assert primes.count(100) == 25
         assert primes.count(self.first_ten_primes[-1]) == 10
