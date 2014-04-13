@@ -4,12 +4,12 @@ from .primes import Primes
 
 class TestPrimes:
     """Unit tests for execution with py.test"""
-    first_ten_primes = [2,3,5,7,11,13,17,19,21,23]
+    first_ten_primes = [2,3,5,7,11,13,17,19,23,29]
     
     def test_getitem(self):
         primes = Primes()
         assert primes[0] == 2
-        assert primes[9] == 23
+        assert primes[9] == self.first_ten_primes[9]
 
     def test_contains(self):
         primes = Primes()
@@ -27,4 +27,5 @@ class TestPrimes:
     def test_count(self):
         primes = Primes()
         assert primes.count(100) == 25
+        assert primes.count(97) == 25
         assert primes.count(self.first_ten_primes[-1]) == 10

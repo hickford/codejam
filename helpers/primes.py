@@ -10,17 +10,19 @@ class Primes:
         self.frontier = 3   # least number we haven't tested for primality
 
     def _explore_to_bound(self, bound):
+        if bound < self.frontier:
+            return 
+
         x = self.frontier
         assert x % 2 == 1
 
         while x <= bound:
-            limit = sqrt(x)
-
             for p in self.primes:
-                if p > limit:
+                if p**2 > x:
                     self.primes.append(x)
                     break
                 if x % p == 0:
+                    # x is composite
                     break
 
             x += 2
@@ -28,15 +30,17 @@ class Primes:
         self.frontier = x
 
     def _explore_to_index(self, index):
-        while len(self.primes) < index:
-            _explore_to_bound(self.frontier+2)
+        while len(self.primes) <= index + 1:
+            self._explore_to_bound(self.frontier+2)
 
     def __getitem__(self, key):
-        self._explore_to_index(key)
-        return self.primes[key]
+        if isinstance(key, slice):
+            index = key.stop - 1
+        else:
+            index = key
 
-    def __iter__(self):
-        pass
+        self._explore_to_index(index)
+        return self.primes[key]
 
     def __contains__(self, x):
         self._explore_to_bound(x)
