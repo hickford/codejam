@@ -23,14 +23,20 @@ def binary_search(f, t):
     assert f(lower) <= t < f(lower+1)
     return lower
 
+# Unit tests
+assert binary_search(lambda n: n, 6) == 6
+assert binary_search(lambda n: n**2, 10) == 3
+assert binary_search(lambda n: 2*n, 1) == 0
+assert binary_search(lambda n: n+10, 5) == None
+
 def powers_of_two():
     n = 1
     while True:
         yield n
         n *= 2
 
-# Unit tests
-assert binary_search(lambda n: n, 6) == 6
-assert binary_search(lambda n: n**2, 10) == 3
-assert binary_search(lambda n: 2*n, 1) == 0
-assert binary_search(lambda n: n+10, 5) == None
+def kth_root(n, k):
+    """Calculate the greatest integer r such that r**k <= n."""
+    return binary_search(lambda x: x**k, n)
+
+assert kth_root(125, 3) == 5
