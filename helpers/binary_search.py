@@ -1,7 +1,7 @@
 #!python3
 
 def binary_search(f, t):
-    """Given an increasing function f, find the greatest non-negative integer n such that f(n) <= t. If f > t for all n, return None."""
+    """Given an increasing function f, find the greatest non-negative integer n such that f(n) <= t. If f(n) > t for all n, return None."""
     if f(0) > t:
         return None
 
