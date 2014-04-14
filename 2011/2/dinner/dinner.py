@@ -1,79 +1,17 @@
-#!python
-# http://code.google.com/codejam/contest/dashboard?c=1150486#s=p2
-from __future__ import division
-import math
-import sys
-from optparse import OptionParser
-from collections import deque, defaultdict, OrderedDict
-usage = "usage: %prog input"
-parser = OptionParser(usage=usage)
-(options, args) = parser.parse_args()
-if args:
-    if args[0] == "-":
-        f = sys.stdin
-    else:
-        f = open(args[0])
-elif not sys.stdin.isatty():
-    f = sys.stdin
-else:
-    parser.error("Need input from file or stdin")
+#!python3
+"""Problem C. Expensive Dinner
+http://code.google.com/codejam/contest/dashboard?c=1150486#s=p2
 
-T = int(f.readline())
-                 
-def nth_root(N,k):
-    """Return greatest integer x such that x**k <= N"""
-    x = int(N**(1/k))      
-    while (x+1)**k <= N:
-        x += 1
-    while x**k > N:
-        x -= 1
-    assert x**k <= N < (x+1)**k    
-    return x
+Your friends are all going to a restaurant for dinner tonight. They're all very good at math, but they're all very strange: your ath friend (starting from 1) will be unhappy unless the total cost of the meal is a positive integer, and is divisible by a.
 
-upper_bound = math.sqrt(10**12)
-# we only need to compute primepi up to sqrt of this
+Your friends enter the restaurant one at a time. As soon as someone enters the restaurant, if that person is unhappy then the group will call a waiter immediately.
 
-import cPickle as pickle
-try:
-    g = open("primes.dump")
-    primes = pickle.load(g)
-    g.close()
-except:
-    def sieve(n = None, primelist = [2]):
-        """Iterator. Yield primes [less than or equal to n]"""
-        for p in primelist:
-            if n and p > n:
-                raise StopIteration
-            yield p
+As long as there is at least one unhappy person in the restaurant, one of those unhappy people will buy the lowest-cost item that will make him or her happy. This will continue until nobody in the restaurant is unhappy, and then the waiter will leave. Fortunately, the restaurant sells food at every integer price. See the explanation of the first test case for an example.
 
-        x = primelist[-1]+1
-        
-        while not n or x <= n:
-            limit = int(math.sqrt(x))
-            for p in primelist:
-                if p > limit:
-                    # x is prime
-                    primelist.append(x)
-                    yield x
-                    break
-                if x % p == 0:
-                    # x is composite
-                    break
-            x += 1
-    primes = list(sieve(upper_bound))
-    g = open("primes.dump",'wb')
-    pickle.dump(primes,g,-1)
-    g.close()
+Your friends could choose to enter the restaurant in any order. After the waiter has been called, if there is more than one unhappy person in the restaurant, any one of those unhappy people could choose to buy something first. The way in which all of those choices are made could have an effect on how many times the group calls a waiter.
 
-import bisect
-
-def primepi(x):
-    """Return the number of primes less than or equal to N"""
-    return bisect.bisect(primes,x)
-
-assert primepi(1) == 0
-assert primepi(2) == 1
-assert primepi(100) == 25
+As the owner of the restaurant, you employ some very tired waiters. You want to calculate the spread of your friends: the difference between the maximum number of times they might call a waiter and the minimum number of times they might call a waiter."""
+from helpers import kth_root, primes
 
 def spread(N):
     if N == 1:
@@ -84,32 +22,20 @@ def spread(N):
         # fewest waiters = pi(n)
         answer = 1
         k = 2
-        x = nth_root(N,k)
+        x = kth_root(N,k)
         while x >= 2:
-            answer += primepi(x)
+            answer += primes.count(x)
             k += 1
-            x = nth_root(N,k)
+            x = kth_root(N,k)
         return answer
 
-def ilog(N,p):
-    """Return greatest integer exponent x such that p**x <= N"""
-    x = int(math.log(N,p))
-    while p**(x+1) <= N:
-        x += 1
-    while p**x > N:
-        x -= 1
-    assert p**x <= N < p**(x+1)    
-    return x
-        
-def spread2(N):
-    """slow"""
-    P = primes[:bisect.bisect(primes,N)]
-    most = 1+sum([ilog(N,p) for p in P])
-    least = max(1,primepi(N))
-    return most-least
+if __name__ == "__main__":
+    import fileinput
+    f = fileinput.input()
+    T = int(f.readline())
    
-for i in range(1,T+1):
-    N = int(f.readline())
-    answer = spread(N)
-    print "Case #%d: %s" % (i,answer)
+    for i in range(1,T+1):
+        N = int(f.readline())
+        answer = spread(N)
+        print("Case #{0}: {1}".format(i,answer))
 
