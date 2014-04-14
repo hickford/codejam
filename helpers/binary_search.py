@@ -29,20 +29,11 @@ def powers_of_two():
         yield n
         n *= 2
 
-# Unit tests
-assert binary_search(lambda n: n, 6) == 6
-assert binary_search(lambda n: n**2, 10) == 3
-assert binary_search(lambda n: 2*n, 1) == 0
-assert binary_search(lambda n: n+10, 5) == None
-
 def minimise_convex(f):
     """Given a U-shaped (convex and eventually increasing) function f, find its minimum over the non-negative integers. That is m such that f(m) <= f(n) for all n. If there exist multiple solutions, return the largest. Uses binary search on the derivative."""
     f_prime = lambda n: (f(n) - f(n-1)) if n > 0 else 0
     return binary_search(f_prime, 0)
 
-assert minimise_convex(lambda x: (x-5)**2) == 5
-assert minimise_convex(lambda x: x) == 0
-assert minimise_convex(lambda x: (x-4)*(x-5)) == 5
 
 def minimise_convex2(f):
     """Given a U-shaped (convex and eventually increasing) function f, find its minimum over the non-negative integers. That is m such that f(m) <= f(n) for all n. If there exist multiple solutions, return the largest. Uses ternary search."""
@@ -64,12 +55,8 @@ def minimise_convex2(f):
     assert f(lower) < f(lower+1)
     return lower
 
-assert minimise_convex2(lambda x: (x-5)**2) == 5
-assert minimise_convex2(lambda x: x) == 0
-assert minimise_convex2(lambda x: (x-4)*(x-5)) == 5
 
 def kth_root(n, k):
     """Calculate the greatest non-negative integer r such that r**k <= n."""
     return binary_search(lambda x: x**k, n)
 
-assert kth_root(125, 3) == 5

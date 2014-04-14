@@ -1,5 +1,4 @@
 #!python3
-
 from .primes import Primes
 
 class TestPrimes:
@@ -22,6 +21,7 @@ class TestPrimes:
     def test_getitem_slice(self):
         primes = Primes()
         assert primes[:10] == self.first_ten_primes
+        assert primes[:5] == self.first_ten_primes[:5]
 
     def test_iter(self):
         primes = Primes()
@@ -30,6 +30,6 @@ class TestPrimes:
 
     def test_count(self):
         primes = Primes()
-        assert primes.count(97) == 25
+        assert primes.count(29) == 10
         assert primes.count(100) == 25
-        assert primes.count(self.first_ten_primes[-1]) == 10
+        assert primes.count(29) == 10
