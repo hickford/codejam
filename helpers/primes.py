@@ -3,9 +3,17 @@ import bisect
 
 class Primes:
     """The prime numbers. Lazy evaluation."""
-    def __init__(self):
+    def __init__(self, frontier = None):
         self.primes = [2]   # primes found so far
         self.frontier = 3   # least number we haven't tested for primality
+        if frontier:
+            self._explore_to_bound(frontier-1)
+
+    def __repr__(self):
+        return "Primes(frontier={0})".format(self.frontier)
+
+    def __str__(self):
+        return "{0} primes up to {1}".format(len(self.primes), self.primes[-1])
 
     def _explore_to_bound(self, bound):
         if bound < self.frontier:
