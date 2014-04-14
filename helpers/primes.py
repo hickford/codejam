@@ -1,7 +1,5 @@
 #!python3
-
 import bisect
-from math import sqrt
 
 class Primes:
     """The prime numbers. Lazy evaluation."""
@@ -30,8 +28,21 @@ class Primes:
         self.frontier = x
 
     def _explore_to_index(self, index):
-        while len(self.primes) <= index + 1:
-            self._explore_to_bound(self.frontier+2)
+        x = self.frontier 
+        assert x % 2 == 1
+
+        while len(self.primes) < index + 1:
+            for p in self.primes:
+                if p**2 > x:
+                    self.primes.append(x)
+                    break
+                if x % p == 0:
+                    # x is composite
+                    break
+
+            x += 2
+
+        self.frontier = x
 
     def __getitem__(self, key):
         if isinstance(key, slice):
