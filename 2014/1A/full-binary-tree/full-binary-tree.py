@@ -11,24 +11,21 @@ A full binary tree is a rooted tree where every node has either exactly 2 childr
 You are given a tree G with N nodes (numbered from 1 to N). You are allowed to delete some of the nodes. When a node is deleted, the edges connected to the deleted node are also deleted. Your task is to delete as few nodes as possible so that the remaining nodes form a full binary tree for some choice of the root from the remaining nodes."""
 import networkx as nx
 
-def largest_binary_tree(G, x):
-    """The MAXIMUM number of nodes in a subgraph of G that is a full binary tree with x its root."""
-    neighbours = G.neighbors(x)
-    G = G.copy()
-    G.remove_node(x)
+def largest_binary_tree(G, r):
+    """The MAXIMUM number of nodes in a subgraph of G that is a full binary tree with r its root."""
+    G = nx.dfs_tree(G, r)
 
-    possible_child_trees = list()
+    # idea: BOTTOM UP! 
 
-    for y in neighbours:
-        H = G.subgraph(nx.node_connected_component(G, y))
-        possible_child_trees.append(largest_binary_tree(H, y))
-
-    if len(possible_child_trees) >= 2:
-        # take two largest child trees
+    for x in reversed(nx.topological_sort(G)):
+        possible_child_trees = [G.node[y]['answer'] for y in G.neighbors(x)]
         possible_child_trees.sort(reverse=True)
-        return 1 + possible_child_trees[0] + possible_child_trees[1]    # remember to count x
+        if len(possible_child_trees) >= 2:
+            G.node[x]['answer'] = 1 + possible_child_trees[0] + possible_child_trees[1]
+        else:
+            G.node[x]['answer'] = 1
 
-    return 1
+    return G.node[r]['answer']
 
 
 def solve(G):
