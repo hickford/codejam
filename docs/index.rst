@@ -11,7 +11,17 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+.. automodule:: codejamhelpers
+   :members:
 
+.. autoclass:: Primes
+    :members:
+
+.. autofunction:: binary_search
+.. autofunction:: powers_of_two
+.. autofunction:: minimise_convex
+.. autofunction:: minimise_convex2
+.. autofunction:: kth_root
 
 Indices and tables
 ==================
