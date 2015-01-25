@@ -1,5 +1,5 @@
 #!python3
-from .binary_search import binary_search, minimise_convex, minimise_convex2, kth_root
+from codejamhelpers import binary_search, minimise_convex, minimise_convex2, kth_root
 
 def test_binary_search():
     assert binary_search(lambda n: n, 6) == 6

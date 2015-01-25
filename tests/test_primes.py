@@ -1,5 +1,5 @@
 #!python3
-from .primes import Primes
+from codejamhelpers import Primes
 
 class TestPrimes:
     """Unit tests for execution with py.test"""
