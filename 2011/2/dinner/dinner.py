@@ -11,7 +11,7 @@ As long as there is at least one unhappy person in the restaurant, one of those 
 Your friends could choose to enter the restaurant in any order. After the waiter has been called, if there is more than one unhappy person in the restaurant, any one of those unhappy people could choose to buy something first. The way in which all of those choices are made could have an effect on how many times the group calls a waiter.
 
 As the owner of the restaurant, you employ some very tired waiters. You want to calculate the spread of your friends: the difference between the maximum number of times they might call a waiter and the minimum number of times they might call a waiter."""
-from helpers import kth_root, primes
+from codejamhelpers import kth_root, primes
 
 def spread(N):
     if N == 1:
