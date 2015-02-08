@@ -12,9 +12,6 @@ setup(
 
     url='https://github.com/hickford/codejam',
 
-    author='Mirth Hickford',
-    author_email='mirth.hickford@gmail.com',
-
     license='MIT',
 
     classifiers=[
