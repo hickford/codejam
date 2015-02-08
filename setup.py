@@ -6,14 +6,11 @@ setup(
     name='codejamhelpers',
 
     # useful: python setup.py sdist bdist_wheel upload
-    version='0.0.1',
+    version='0.0.2',
 
     description='Helper algorithms for solving Google Code Jam problems',
 
     url='https://github.com/hickford/codejam',
-
-    author='Mirth Hickford',
-    author_email='mirth.hickford@gmail.com',
 
     license='MIT',
 
