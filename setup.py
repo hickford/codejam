@@ -12,8 +12,8 @@ setup(
 
     url='https://github.com/hickford/codejam',
 
-    author='Matt Hickford',
-    author_email='matt.hickford@gmail.com',
+    author='Mirth Hickford',
+    author_email='mirth.hickford@gmail.com',
 
     license='MIT',
 
