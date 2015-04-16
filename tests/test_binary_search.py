@@ -9,6 +9,8 @@ def test_binary_search():
 
 def test_kth_root():
     assert kth_root(125, 3) == 5
+    assert kth_root(125, 2) == 11
+    assert kth_root(125, 1) == 125
 
 def exercise(find_minimum):
     assert find_minimum(lambda x: (x-5)**2) == 5
