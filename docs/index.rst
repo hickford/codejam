@@ -16,6 +16,7 @@ Contents:
 
 .. autoclass:: Primes
     :members:
+    :special-members: __contains__, __getitem__
 
 .. autofunction:: binary_search
 .. autofunction:: powers_of_two
