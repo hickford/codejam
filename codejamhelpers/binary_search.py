@@ -24,7 +24,7 @@ def binary_search(f, t):
     return lower
 
 def powers_of_two():
-    """Powers of two, from 1"""
+    """Powers of 2, from 1"""
     n = 1
     while True:
         yield n
