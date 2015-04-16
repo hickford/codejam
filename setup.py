@@ -6,7 +6,7 @@ setup(
     name='codejamhelpers',
 
     # useful: python setup.py sdist bdist_wheel upload
-    version='0.0.2',
+    version='0.1.0',
 
     description='Helper algorithms for solving Google Code Jam problems',
 
