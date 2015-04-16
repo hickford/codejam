@@ -2,7 +2,7 @@
 import bisect
 
 class Primes:
-    """The prime numbers. Lazy discovery (but results are cached)."""
+    """The prime numbers. Lazy evaluation."""
     def __init__(self, frontier = None):
         self.primes = [2]   # primes found so far
         self.frontier = 3   # least number we haven't tested for primality
@@ -52,19 +52,21 @@ class Primes:
 
         self.frontier = x
 
-    def __getitem__(self, key):
-        if isinstance(key, slice):
-            index = key.stop - 1
+    def __getitem__(self, i):
+        """The ith prime"""
+        if isinstance(i, slice):
+            index = i.stop - 1
         else:
-            index = key
+            index = i
 
         self._explore_to_index(index)
-        return self.primes[key]
+        return self.primes[i]
 
-    def __contains__(self, x):
-        self._explore_to_bound(x)
-        i = bisect.bisect_left(self.primes, x)
-        return i < len(self.primes) and self.primes[i] == x
+    def __contains__(self, n):
+        """Test whether n is a prime"""
+        self._explore_to_bound(n)
+        i = bisect.bisect_left(self.primes, n)
+        return i < len(self.primes) and self.primes[i] == n
 
     def count(self, x):
         """Count the number of primes less than or equal to x"""
