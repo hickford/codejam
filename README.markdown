@@ -1,17 +1,24 @@
 Google Code Jam solutions
 ==================
 
-These are my solutions to problems in [Google Code Jam](https://code.google.com/codejam), 
+My solutions to problems in [Google Code Jam](https://code.google.com/codejam).
 
 codejamhelpers
 -----
 
 [![Latest Version](https://pypip.in/version/codejamhelpers/badge.svg)](https://pypi.python.org/pypi/codejamhelpers/)
-[![Build Status](https://travis-ci.org/hickford/codejam.svg?branch=master)](https://travis-ci.org/hickford/codejam)
 
-A package of helper functions, in particular binary search and the prime numbers. Docs at http://codejamhelpers.readthedocs.org/
+A library of helper functions, in particular binary search and the prime numbers. Install from [PyPI](https://pypi.python.org/pypi/codejamhelpers/):
 
     pip install codejamhelpers
+
+Docs at http://codejamhelpers.readthedocs.org/
+
+### Tests
+
+[![Build Status](https://travis-ci.org/hickford/codejam.svg?branch=master)](https://travis-ci.org/hickford/codejam)
+
+    py.test
 
 Progress
 -----

@@ -63,7 +63,7 @@ class Primes:
         return self.primes[i]
 
     def __contains__(self, n):
-        """Test whether n is a prime"""
+        """Test whether n is prime"""
         self._explore_to_bound(n)
         i = bisect.bisect_left(self.primes, n)
         return i < len(self.primes) and self.primes[i] == n
