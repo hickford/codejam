@@ -27,8 +27,6 @@ def step(k):
 
 def solve(n, k):
     """Starting with n stalls, size of largest gap after k people enter"""
-    if k == 0:
-        return n
     correction = step(k)-(k+1)
     return (n+correction)//step(k)
 
