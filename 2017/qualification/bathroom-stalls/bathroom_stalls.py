@@ -11,7 +11,7 @@ import heapq
 import codejamhelpers
 import math
 
-def solve(n, k):
+def solve_slow(n, k):
     """Starting with n stalls, size of largest gap after k people enter"""
     gaps = [-n] # use negative keys for max-heap
     for person in range(k):
@@ -22,24 +22,19 @@ def solve(n, k):
 
     return abs(heapq.heappop(gaps))
 
-def bound(gap, k):
-    """Calculate minimum number of stalls n to leave a gap size g after k people enter"""
-    if k == 0:
-        return gap
-    if k == 1:
-        return 2*gap
+def step(k):
+    return 2**codejamhelpers.binary_search(lambda t: 2**t, k+1)
 
-    w = 2**codejamhelpers.binary_search(lambda t: 2**t, k)
-    return w * (gap-1) + 1
-
-    return k + 1 + (gap - 1) * 2**math.ceil(math.log(k,2))
-
-    return gap + k + (k*(gap-1)+1)//2
-    # return gap * (k+1) + k
-
-def solve_fast(n, k):
+def solve(n, k):
     """Starting with n stalls, size of largest gap after k people enter"""
-    return codejamhelpers.binary_search(lambda gap: bound(gap, k), n)
+    if k == 0:
+        return n
+    correction = step(k)-(k+1)
+    return (n+correction)//step(k)
+
+for n in range(1, 100):
+    for k in range(0, n+1):
+        assert solve(n, k) == solve_slow(n, k), f"{n},{k}"
 
 import fileinput
 f = fileinput.input()
@@ -50,7 +45,3 @@ for case in range(1, T+1):
     last_gap = solve(N, K-1)
     solution = f"{last_gap//2} {(last_gap-1)//2}"
     print(f"Case #{case}: {solution}")
-
-#for n in range(1, 100):
-#    for k in range(1, n+1):
-#        assert solve(n, k) == solve_fast(n, k), f"{n},{k}"
