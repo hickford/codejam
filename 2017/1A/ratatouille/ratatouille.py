@@ -13,8 +13,7 @@ You want to share your recipe with as many customers as possible, so you want to
 
 from math import floor, ceil
 
-def suitable(potential_kit, recipe, i):
-    servings = lower_bound_for_servings = ceil(potential_kit[i] / recipe[i] / 1.1)
+def suitable(potential_kit, recipe, servings):
     return all(servings * recipe[i] * 0.9 <= potential_kit[i] <= servings * recipe[i] * 1.1 for i in range(len(recipe)))
 
 import fileinput
@@ -37,7 +36,8 @@ for case in range(1, T+1):
         # package with largest multiple
         i = max(range(N), key=lambda i: packages_by_ingredient[i][-1] / recipe[i])
         potential_kit = [p[-1] for p in packages_by_ingredient]
-        if suitable(potential_kit, recipe, i):
+        lower_bound_for_servings = ceil(potential_kit[i] / recipe[i] / 1.1)
+        if suitable(potential_kit, recipe, lower_bound_for_servings):
             kits.append(potential_kit)
             for p in packages_by_ingredient:
                 p.pop()
