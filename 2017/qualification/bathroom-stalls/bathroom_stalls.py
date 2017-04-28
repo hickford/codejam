@@ -22,13 +22,11 @@ def solve_slow(n, k):
 
     return abs(heapq.heappop(gaps))
 
-def step(k):
-    return 2**codejamhelpers.binary_search(lambda t: 2**t, k+1)
-
 def solve(n, k):
     """Starting with n stalls, size of largest gap after k people enter"""
-    correction = step(k)-(k+1)
-    return (n+correction)//step(k)
+    step = 2**((k+1).bit_length()-1)
+    correction = step-(k+1)
+    return (n+correction)//step
 
 for n in range(1, 100):
     for k in range(0, n+1):
