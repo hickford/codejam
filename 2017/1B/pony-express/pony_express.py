@@ -7,9 +7,9 @@ The routes between cities were established via complicated negotiations between 
 
 You are a time traveling entrepreneur, and you have brought a fast computer from the future. A single computer is not enough for you to set up an e-mail service and make the Pony Express obsolete, but you can use it to make optimal routing plans for the Pony Express. Given all data about routes between cities and the horses in each city, and a list of pairs of starting and ending cities, can you quickly calculate the minimum time necessary for each delivery? (You should treat all of these deliveries as independent; using cities/horses on one route does not make them unavailable on other routes.)"""
 
-from math import inf
-import networkx as nx
-from networkx.algorithms.shortest_paths import floyd_warshall, floyd_warshall_numpy
+import numpy
+from scipy.sparse.csgraph import floyd_warshall
+import fileinput
 
 def solve_linear(N, Q, endurances, speeds, distances, starts, destinations):
     times = [inf for i in range(N)]
@@ -29,72 +29,20 @@ def solve_linear(N, Q, endurances, speeds, distances, starts, destinations):
 
     return times[-1]
 
-def solve(N, Q, endurances, speeds, distances, starts, destinations):
-    assert len(endurances) == N
-    assert len(speeds) == N
-    assert len(distances) == N
-    assert len(starts) == Q
-    assert len(destinations) == Q
-
-    G = nx.DiGraph()
-    for i in range(N):
-        G.add_node(i)
-    for i in range(N):
-        for j in range(N):
-            if distances[i][j] == inf:
-                continue
-                
-            assert 0 < distances[i][j] < inf    
-            G.add_edge(i, j, weight=distances[i][j])
-
-    M = floyd_warshall_numpy(G)
-
-    G2 = nx.DiGraph()
-    for i in range(N):
-        G2.add_node(i)
-
-    for i in range(N):
-        distances_from_i = [M[i,j] for j in range(N)]
-        distances_from_i = [d if d <= endurances[i] else inf for d in distances_from_i]
-        times_from_i = [d / speeds[i] for d in distances_from_i]
-        for j in range(N):
-            if times_from_i[j] == inf:
-                continue
-            G2.add_edge(i, j, weight=times_from_i[j])
-
-    N = floyd_warshall_numpy(G2)
-
-    solutions = list()
-    for start, destination in zip(starts, destinations):
-        solutions.append(N[start,destination])
-
-    return " ".join(str(x) for x in solutions)
-
-import fileinput
 f = fileinput.input()
-
 T = int(f.readline())
 for case in range(1, T+1):
-    N, Q = [int(x) for x in f.readline().split()]
-    endurances = list()
-    speeds = list()
-    for i in range(N):
-        e, s = [int(x) for x in f.readline().split()]
-        endurances.append(e)
-        speeds.append(s)
+    N, Q = (int(x) for x in f.readline().split())
+    endurances, speeds = numpy.array([[int(x) for x in f.readline().split()] for i in range(N)]).T
+    distances = numpy.array([[float(x) for x in f.readline().split()] for i in range(N)])
+    distances[distances==-1] = numpy.inf
+    
+    distances = floyd_warshall(distances) 
+    distances[distances > numpy.vstack(endurances)] = numpy.inf
+    
+    times = distances / numpy.vstack(speeds)
+    times = floyd_warshall(times)
 
-    distances = list()
-    for i in range(N):
-        distances.append([int(x) if x != "-1" else inf for x in f.readline().split()])
-
-    starts = list()
-    destinations = list()
-    for k in range(Q):
-        u, v = [int(x) for x in f.readline().split()]
-        assert 1 <= u <= N
-        assert 1 <= v <= N
-        starts.append(u-1)
-        destinations.append(v-1)
-
-    solution = solve(N, Q, endurances, speeds, distances, starts, destinations)
+    starts, destinations = numpy.array([[int(x) for x in f.readline().split()] for i in range(Q)]).T
+    solution = " ".join(str(times[u-1,v-1]) for u,v in zip(starts, destinations))
     print(f"Case #{case}: {solution}")
