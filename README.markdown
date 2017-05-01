@@ -6,7 +6,7 @@ My solutions to problems in [Google Code Jam](https://code.google.com/codejam).
 codejamhelpers
 -----
 
-[![Latest Version](https://pypip.in/version/codejamhelpers/badge.svg)](https://pypi.python.org/pypi/codejamhelpers/)
+[![Latest Version](https://img.shields.io/pypi/v/codejamhelpers.svg)](https://pypi.python.org/pypi/codejamhelpers/)
 
 A library of helper functions, in particular binary search and the prime numbers. Install from [PyPI](https://pypi.python.org/pypi/codejamhelpers/):
 
