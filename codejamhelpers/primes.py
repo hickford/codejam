@@ -2,7 +2,7 @@
 import bisect
 
 class Primes:
-    """The prime numbers. Lazy evaluation (but cached). Prepopulated up to frontier."""
+    """The prime numbers, prepopulated up to frontier, with lazy evaluation beyond."""
     def __init__(self, frontier = None):
         self.primes = [2]   # primes found so far
         self.frontier = 3   # least number we haven't tested for primality
