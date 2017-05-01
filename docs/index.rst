@@ -3,8 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to codejamhelpers's documentation!
+codejamhelpers documentation
 ==========================================
+
+A library of helper functions useful for solving Google Code Jam problems.
 
 Contents:
 
@@ -23,6 +25,7 @@ Contents:
 .. autofunction:: minimise_convex
 .. autofunction:: minimise_convex2
 .. autofunction:: kth_root
+.. autofunction:: trials
 
 Indices and tables
 ==================
