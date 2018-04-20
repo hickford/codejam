@@ -42,6 +42,7 @@ for case in range(1, T+1):
         for i in range(C):
             if i == limiting:
                 continue
+
             current = bits_per_cashier[i]
             # try swapping completely
             if current + limiting_load <= maxes[i] and time(i, current+limiting_load) < limit:
@@ -57,6 +58,32 @@ for case in range(1, T+1):
                 bits_per_cashier[i] += 1
                 found_improvement = True
                 break
+        if found_improvement:
+            continue
+
+        for i in range(C):
+            if not bits_per_cashier[i]:
+                continue
+            for j in range(C):
+                if i == j or not bits_per_cashier[j]:
+                    continue
+                # move all bits from j to i to leave more robots free
+                if bits_per_cashier[j] and bits_per_cashier[i] + bits_per_cashier[j] <= maxes[i] and time(i, bits_per_cashier[i] + bits_per_cashier[j]) <= limit:
+                    bits_per_cashier[i] += bits_per_cashier[j]
+                    bits_per_cashier[j] = 0
+                    found_improvement = True
+                    break
+        if found_improvement:
+            continue
+
+        for i in range(C):
+            if bits_per_cashier[i] == maxes[i]:
+                for j in range(C):
+                    if bits_per_cashier[j] and bits_per_cashier[j] + 1 < maxes[j]:
+                        bits_per_cashier[i] -= 1
+                        bits_per_cashier[j] += 1
+                        found_improvement = True
+                        break
 
     print("Case {}: {}".format(case, limit))
 
