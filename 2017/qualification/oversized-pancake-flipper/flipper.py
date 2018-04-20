@@ -10,13 +10,16 @@ Your apprentice cook, who is still learning the job, just used the old-fashioned
 Given the current state of the pancakes, calculate the minimum number of uses of the oversized pancake flipper needed to leave all pancakes happy side up, or state that there is no way to do it."""
 
 def solve(p, K):
+    # simulate greedy algorithm. Work right to left. Flip rightmost unhappy pancake without disturbing those already fixed.
     flipper = 2**K - 1
 
     flips = 0
     while p >= flipper:
         if p % 2 == 0:
+            # don't disturb, ignore pancake.
             p //= 2
         else:
+            # flip rightmost pancakes
             flips += 1
             p ^= flipper
 
