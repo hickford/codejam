@@ -2,31 +2,6 @@
 
 # The first line of the input gives the number of test cases, T. T test cases follow. Each begins with one line containing one integer S: the number of road signs. Then, S more lines follow. The i-th of these lines represents the i-th sign (in west-to-east order), and contains three integers Di, Ai, and Bi: the sign's distance (in kilometers) east of Signfield, the number on its west side, and the number on its east side.
 
-def binary_search(f, t):
-    """Find the greatest positive integer n such that f(n) <= t , assuming f is increasing. Or return 0 if f(1) > t"""
-    if f(1) > t:
-        return 0
-
-    n = 1
-
-    while f(n) <= t:
-        lower = n	# Can draw this many rings
-        n *= 2
-    else:
-        upper = n	# Can't draw this many rings
-
-    assert lower < upper
-
-    while upper > lower+1:
-        mid = (upper + lower) // 2
-        if f(mid) <= t:
-            lower = mid
-        else:
-            upper = mid
-
-    assert upper == lower+1
-    return lower
-
 import fileinput
 from sys import stderr
 f = fileinput.input()
