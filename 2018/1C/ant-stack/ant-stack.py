@@ -12,7 +12,12 @@ from sys import stderr, argv
 from itertools import accumulate, chain
 import math
 
-def solve(W):
+try:
+    import numpy
+except ImportError:
+    numpy = None
+
+def solve_vanilla(W):
     N = len(W)
     capacity = [6*w for w in W]
     inf = math.inf
@@ -48,9 +53,7 @@ def solve_with_numpy(W):
 
     return h
 
-if "--numpy" in argv:
-    import numpy
-    solve = solve_with_numpy
+solve = solve_with_numpy if numpy and not "--vanilla" in argv else solve_vanilla
 
 T = int(input())
 for case in range(1, T+1):
