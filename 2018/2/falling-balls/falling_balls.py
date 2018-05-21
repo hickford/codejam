@@ -10,25 +10,30 @@ for case in range(1, T+1):
     progress = [1]*C
     rows = list()
     while progress != B:
+        required_to_left = 0
+        seen_so_far = 0
         row = ""
-        delta = [p-b for p,b in zip(progress,B)]
-        accumulated = [0] + list(accumulate(delta))
-        for i in range(C):
-            a = accumulated[i]
-            if a < 0:
-                row += "/"
-                progress[i] -= 1
-                progress[i-1] += 1
-            elif a > 0:
-                row += "\\"
-                progress[i] -= 1
-                progress[i+1] += 1
-            else:
+        new_progress = [0]*C
+        for i, p in enumerate(progress):
+            seen_so_far += p
+            if p == 0:
                 row += "."
-        if "\/" in row or row[0] != "." or row[-1] != ".":
+            elif required_to_left >= seen_so_far:
+                row += "/"
+                new_progress[i-1] += p
+            elif required_to_left + B[i] >= seen_so_far:
+                row += "."
+                new_progress[i] += p
+            else:
+                row += "\\"
+                new_progress[i+1] += p
+                
+            required_to_left += B[i]
+        if "\\/" in row or not row.startswith(".") or not row.endswith("."):
             rows = False
             break
         rows.append(row)
+        progress = new_progress
         
     if progress == B:
         rows.append("."*C)
