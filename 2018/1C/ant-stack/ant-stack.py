@@ -9,7 +9,7 @@ For each ant, the sum of the weights of all the ants above it in the stack must 
 What is the maximum number of these ants that can form such a stack?"""
 
 from sys import stderr, argv
-from itertools import accumulate, chain
+from itertools import accumulate
 import math
 
 try:
@@ -29,8 +29,8 @@ def solve_vanilla(W):
     h = 0
     while min(S) < inf:
         h += 1
-        bests = chain([inf], accumulate(S, min))
-        S = list(map(mapper, W, bests, capacity))
+        T = [inf] + list(accumulate(S, min)) # T[i] = minimum weight of stack height h-1 with some ant j < i at base
+        S = list(map(mapper, W, T, capacity))
         # print(S, file=stderr)
 
     return h
@@ -45,15 +45,15 @@ def solve_with_numpy(W):
     h = 0
     while numpy.min(S) < inf:
         h += 1
-        bests = numpy.minimum.accumulate(S)
-        bests = numpy.roll(bests, 1)
-        bests[0] = inf
-        S = numpy.where(bests <= capacity, W + bests, inf)
+        T = numpy.minimum.accumulate(S)
+        T = numpy.roll(T, 1)
+        T[0] = inf
+        S = numpy.where(T <= capacity, W + T, inf)
         # print(S, file=stderr)
 
     return h
 
-solve = solve_with_numpy if numpy and not "--vanilla" in argv else solve_vanilla
+solve = "--numpy" in argv and solve_with_numpy or "--vanilla" in argv and solve_vanilla or (solve_with_numpy if numpy else solve_vanilla)
 
 T = int(input())
 for case in range(1, T+1):
