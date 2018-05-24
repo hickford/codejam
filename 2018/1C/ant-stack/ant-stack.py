@@ -24,8 +24,8 @@ def solve_vanilla(W):
 
     # let S[h][i] be minimum weight of stack height h with ant i at base
     S = W # S_1
-    def mapper(w, b, c):
-        return w + b if b <= c else inf 
+    def mapper(w, t, c):
+        return w + t if t <= c else inf 
     h = 0
     while min(S) < inf:
         h += 1
@@ -47,13 +47,18 @@ def solve_with_numpy(W):
         h += 1
         T = numpy.minimum.accumulate(S)
         T = numpy.roll(T, 1)
-        T[0] = inf
+        T[0] = inf  # T[i] = minimum weight of stack height h-1 with some ant j < i at base
         S = numpy.where(T <= capacity, W + T, inf)
         # print(S, file=stderr)
 
     return h
 
-solve = "--numpy" in argv and solve_with_numpy or "--vanilla" in argv and solve_vanilla or (solve_with_numpy if numpy else solve_vanilla)
+if "--numpy" in argv:
+    solve = solve_with_numpy
+elif "--vanilla" in argv:
+    solve = solve_vanilla
+else:
+    solve = solve_with_numpy if numpy else solve_vanilla
 
 T = int(input())
 for case in range(1, T+1):
