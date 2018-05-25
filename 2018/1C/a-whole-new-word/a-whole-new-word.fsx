@@ -22,5 +22,5 @@ for case in [1..T] do
     let letters = [0..L-1] |> List.map (ithLetters >> List.sort >> List.distinct)
     let feasibleWords = letters |> product |> Seq.map (Seq.toArray >> System.String)
     let newWord = feasibleWords |> Seq.zip (cycle words) |> Seq.tryFind (fun (a,b) -> a <> b) |> Option.map snd
-    let solution = Option.defaultValue "-" newWord
+    let solution = newWord |> Option.defaultValue "-"
     printfn "Case #%d: %s" case solution
