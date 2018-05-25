@@ -18,7 +18,7 @@ for case in [1..T] do
     let words = [1..N] |> List.map (fun _ -> System.Console.ReadLine()) |> List.sort
     let letter i (w:string) = w.[i]
     let ithLetters i = words |> List.map (letter i)
-    let L = words.[0].Length
+    let L = words |> List.head |> String.length
     let letters = [0..L-1] |> List.map (ithLetters >> List.sort >> List.distinct)
     let feasibleWords = letters |> product |> Seq.map (Seq.toArray >> System.String)
     let newWord = feasibleWords |> Seq.zip (cycle words) |> Seq.tryFind (fun (a,b) -> a <> b) |> Option.map snd
