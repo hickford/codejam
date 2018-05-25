@@ -1,9 +1,14 @@
+// https://codejam.withgoogle.com/2018/challenges/0000000000007765/dashboard
+// A Whole New Word
+// Vincent and Desta are childhood friends. Today, Vincent is showing N distinct L-letter words to Desta by using some letter tiles. Each tile contains one uppercase English alphabet letter, and one number between 1 and L. A word consists of the letters spelled out by L tiles with numbers from 1 through L, in order. (Vincent's words are not necessarily real English words.)
+
 // Cartesian product of lists
 let product lists = 
     let folder list state =
          state |> Seq.allPairs list |> Seq.map List.Cons 
     Seq.singleton List.empty |> List.foldBack folder lists
 
+// repeat sequence indefinitely
 let cycle seq =
     Seq.initInfinite (fun _ -> seq) |> Seq.concat
 
