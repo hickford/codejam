@@ -34,7 +34,7 @@ for case in [1..T] do
         solution.remaining |> List.isEmpty && 
         let sticks = solution.picked
         let n = sticks |> List.length
-        n >= 3 && (sticks |> List.map length |> List.max)*2 <= (List.sumBy length sticks)
+        n >= 3 && (sticks |> List.map length |> List.max)*2 < (List.sumBy length sticks)
 
     let moves solution = 
         match solution.remaining with
