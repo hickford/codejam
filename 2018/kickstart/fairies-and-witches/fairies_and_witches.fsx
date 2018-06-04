@@ -31,6 +31,7 @@ for case in [1..T] do
     let sticks = [for i in [0..N-1] do for j in [0..N-1] do if i < j && L.[i,j] > 0 then yield {length = L.[i,j]; endpoints = i,j }] |> List.sortByDescending length
 
     let solved solution =
+        solution.remaining |> List.isEmpty && 
         let sticks = solution.picked
         let n = sticks |> List.length
         n >= 3 && (sticks |> List.map length |> List.max)*2 <= (List.sumBy length sticks)
@@ -38,15 +39,13 @@ for case in [1..T] do
     let moves solution = 
         match solution.remaining with
         | stick::others ->
-            let withStick = {picked = stick::solution.picked; remaining = others |> List.where (independent stick) }
-            let withoutStick = {solution with remaining = others}
-            [withStick; withoutStick] |> List.toSeq
+            seq {
+                for included in [true; false] do
+                if included then
+                    yield {picked = stick::solution.picked; remaining = others |> List.where (independent stick) }
+                else
+                    yield {solution with remaining = others} }
         | _ -> Seq.empty
 
-    let initialState = {picked = []; remaining = sticks}
-   
-    let solutions = initialState |> solveByBacktracking moves solved
-    for solution in solutions do printfn "%A" solution.picked
-
-    let solution = initialState |> solveByBacktracking moves solved |> Seq.length
+    let solution = {picked = []; remaining = sticks} |> solveByBacktracking moves solved |> Seq.length
     printfn "Case #%d: %d" case solution
