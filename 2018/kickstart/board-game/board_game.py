@@ -9,7 +9,7 @@ Bala thinks that his advantage is enough to make him win, so he just randomly sh
 
 Even though Bahu is at a disadvantage, he is still going to try to win! Find the probability that he will win if he distributes his cards optimally. Note that all Bala's cards are faced down so Bahu must choose the distribution of his cards before seeing the distribution of Bala's cards."""
 
-from itertools import combinations
+from itertools import combinations, permutations
 from sys import stderr
 
 def hand_distribution(B):
@@ -21,30 +21,19 @@ def battlefield_distribution(B):
 
 from bisect import bisect_left
 
+def victory(A_battlefields, B_battlefields):
+    return sum(a > b for a, b in zip(A_battlefields, B_battlefields)) >= 2
+
 def solve(A, B):
     hand_distribution_B = hand_distribution(B)
     def prob_win_battle(hand):
         """Probability that hand with given sum wins battle"""
-        return bisect_left(distribution, hand) / len(hand_distribution_B)
+        return bisect_left(hand_distribution_B, hand) / len(hand_distribution_B)
 
-    battlefield_distribution_B = battlefield_distribution(B)
-    def prob_victory(A_battlefields):
-        pass
+    possible_battlefields_B = list(possible_battlefields(B))
 
     def prob_victory(A_battlefields):
-        """Probability that three hands with given sums win majority of battles"""
-        count = 0
-        victories = 0
-        for B_battlefields in possible_battlefields_B:
-            if sum(a > b for a,b in zip(A_battlefields, B_battlefields)) >= 2:
-                victories += 1
-            count += 1
-        return victories / count
-
-    def naive_preference(A_battlefields):
-        # preference assuming independence
-        a, b, c = map(prob_win_battle, A_battlefields)
-        return a*b*c + (1-a)*b*c + a*(1-b)*c + a*b*(1-c)
+        return sum(victory(A_battlefields, B_battlefields) for B_battlefields in possible_battlefields_B) / len(possible_battlefields_B)
 
     A_battlefields = max(possible_battlefields(A), key=prob_victory)
     print(A_battlefields, file=stderr)
