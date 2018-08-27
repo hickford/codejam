@@ -9,34 +9,62 @@ Bala thinks that his advantage is enough to make him win, so he just randomly sh
 
 Even though Bahu is at a disadvantage, he is still going to try to win! Find the probability that he will win if he distributes his cards optimally. Note that all Bala's cards are faced down so Bahu must choose the distribution of his cards before seeing the distribution of Bala's cards."""
 
-from itertools import permutations
+from itertools import combinations
 from sys import stderr
 
-def to_battlefields(cards):
-    N = len(cards) // 3
-    return (cards[0:N], cards[N:2*N], cards[2*N:3*N])
+def hand_distribution(B):
+    N = len(B) // 3
+    return sorted(sum(hand) for hand in combinations(B, N))
 
-def hickford_preference(battlefields):
-    # prefer medium-medium-small shape, with mediums as equal as possible
-    return sum(battlefields[0])+sum(battlefields[1]), -abs(sum(battlefields[0]) - sum(battlefields[1]))
+def battlefield_distribution(B):
+    return sorted(possible_battlefields(B))
+
+from bisect import bisect_left
 
 def solve(A, B):
-    # A = sorted(A, reverse=True)
-    # N = len(cards) // 3
-    possible_battlefields = map(to_battlefields, permutations(A))
-    A_battlefields = max(possible_battlefields, key=hickford_preference)
-    print(A_battlefields, file=stderr)
-    return prob_victory(A_battlefields, B)
+    hand_distribution_B = hand_distribution(B)
+    def prob_win_battle(hand):
+        """Probability that hand with given sum wins battle"""
+        return bisect_left(distribution, hand) / len(hand_distribution_B)
 
-def victory(A_battlefields, B_battlefields):
-    return sum(sum(A) > sum(B) for A,B in zip(A_battlefields, B_battlefields)) >= 2
+    battlefield_distribution_B = battlefield_distribution(B)
+    def prob_victory(A_battlefields):
+        pass
+
+    def prob_victory(A_battlefields):
+        """Probability that three hands with given sums win majority of battles"""
+        count = 0
+        victories = 0
+        for B_battlefields in possible_battlefields_B:
+            if sum(a > b for a,b in zip(A_battlefields, B_battlefields)) >= 2:
+                victories += 1
+            count += 1
+        return victories / count
+
+    def naive_preference(A_battlefields):
+        # preference assuming independence
+        a, b, c = map(prob_win_battle, A_battlefields)
+        return a*b*c + (1-a)*b*c + a*(1-b)*c + a*b*(1-c)
+
+    A_battlefields = max(possible_battlefields(A), key=prob_victory)
+    print(A_battlefields, file=stderr)
+    return prob_victory(A_battlefields)
+
+def possible_battlefields(B):
+    N = len(B) // 3
+    indices = range(len(B))
+    for combination in combinations(indices, N):
+        first_battlefield = sum(B[j] for j in combination)
+        remainder = [j for j in indices if j not in combination]
+        for second_combination in combinations(remainder, N):
+            second_battlefield = sum(B[j] for j in second_combination)
+            third_battlefield = sum(B[j] for j in remainder if j not in second_combination)
+            yield first_battlefield, second_battlefield, third_battlefield
 
 def prob_victory(A_battlefields, B):
-    N = len(B) // 3
-    count = 0
     victories = 0
-    for permutation in permutations(B):
-        B_battlefields = to_battlefields(permutation)
+    count = 0
+    for B_battlefields in possible_battlefields(B):
         if victory(A_battlefields, B_battlefields):
             victories += 1
         count += 1
