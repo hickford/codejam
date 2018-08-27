@@ -50,16 +50,6 @@ def possible_battlefields(B):
             third_battlefield = sum(B[j] for j in remainder if j not in second_combination)
             yield first_battlefield, second_battlefield, third_battlefield
 
-def prob_victory(A_battlefields, B):
-    victories = 0
-    count = 0
-    for B_battlefields in possible_battlefields(B):
-        if victory(A_battlefields, B_battlefields):
-            victories += 1
-        count += 1
-
-    return victories / count
-
 if __name__ == "__main__":
     """The first line of the input gives the number of test cases, T. T test cases follow; each consists of three lines. The first line contains an integer N, as described above. The second line contains 3 * N integers A0, A1, ... , A3*N-1, representing the strength values of Bahu's cards. The third line consists of 3 * N integers B0, B1, ... , B3*N-1, representing the strength values of Bala's cards."""
     import fileinput
