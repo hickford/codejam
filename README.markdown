@@ -25,7 +25,7 @@ Progress
 
 | Year  | Progress | Favourite problem |
 | ------------- | ------------- | -- |
-| 2018  | Round 2, rank 3021   | [Transmutation](https://codejam.withgoogle.com/2018/challenges/0000000000007764/dashboard/000000000003675c)
+| 2018  | Round 2, rank 3021   | [Transmutation](https://codingcompetitions.withgoogle.com/codejam/round/0000000000007764/000000000003675c)
 | 2017  | Round 1C, rank 1399  | [Core Training](https://code.google.com/codejam/contest/3274486/dashboard#s=p2)|
 | 2014  | Round 1B, rank 1623  | |
 | 2013  | Round 1  | |
